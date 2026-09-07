@@ -6,8 +6,8 @@ import com.himataku.nmo.customblock.AllItem;
 import com.himataku.nmo.tab.NmoTab;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 @Mod(NewMineOrder.MODID)
 public class NewMineOrder {
@@ -24,6 +24,7 @@ public class NewMineOrder {
         ModBlockEntities.BLOCK_ENTITY_TYPES.register(bus);
         ModMenus.MENUS.register(bus);
         ModRecipes.SERIALIZERS.register(bus);
+
         bus.addListener(
                 NewMineOrder::registerCapabilities
         );
@@ -32,11 +33,21 @@ public class NewMineOrder {
     private static void registerCapabilities(
             RegisterCapabilitiesEvent event
     ) {
+
+        // Crusherの電力
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 ModBlockEntities.CRUSHER.get(),
-                (crusher, side) ->
-                        crusher.getEnergyStorage()
+                (blockEntity, side) ->
+                        blockEntity.getEnergyStorage()
+        );
+
+        // Crusherのアイテム入出力
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.CRUSHER.get(),
+                (blockEntity, side) ->
+                        blockEntity.getItemHandler()
         );
     }
 }

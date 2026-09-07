@@ -40,5 +40,34 @@ public class AllItem {
 
                     )
             );
+
+    public static final DeferredItem<Item> RAW_TITAN =
+            ITEMS.register("raw_titan", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> BOTTLE_HELIUM_III =
+            ITEMS.register("bottle_helium_iii", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> BOTTLE_HELIUM =
+            ITEMS.register("bottle_helium", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> MONAZITE =
+            ITEMS.register("monazite", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
     
 }

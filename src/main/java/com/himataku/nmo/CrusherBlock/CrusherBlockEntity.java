@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class CrusherBlockEntity extends BlockEntity implements Container {
 
@@ -40,8 +41,190 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             new EnergyStorage(
                     MAX_ENERGY,
                     MAX_ENERGY,
-                    0
+                    MAX_ENERGY
             );
+
+    /*
+     * 外部からのアイテム入出力
+     *
+     * スロット0:
+     *   外部から投入可能
+     *   外部への搬出不可
+     *
+     * スロット1～3:
+     *   外部から投入不可
+     *   外部へ搬出可能
+     */
+    private final IItemHandler itemHandler =
+            new IItemHandler() {
+
+                @Override
+                public int getSlots() {
+                    return INVENTORY_SIZE;
+                }
+
+                @Override
+                public ItemStack getStackInSlot(int slot) {
+                    if (slot < 0 || slot >= INVENTORY_SIZE) {
+                        return ItemStack.EMPTY;
+                    }
+
+                    return items.get(slot);
+                }
+
+                @Override
+                public ItemStack insertItem(
+                        int slot,
+                        ItemStack stack,
+                        boolean simulate
+                ) {
+
+                    // 入力スロット以外には入れられない
+                    if (slot != INPUT_SLOT) {
+                        return stack;
+                    }
+
+                    if (stack.isEmpty()) {
+                        return ItemStack.EMPTY;
+                    }
+
+                    ItemStack current =
+                            items.get(INPUT_SLOT);
+
+                    // すでに別アイテムが入っている
+                    if (!current.isEmpty()
+                            && !ItemStack.isSameItemSameComponents(
+                            current,
+                            stack
+                    )) {
+
+                        return stack;
+                    }
+
+                    int maxStackSize =
+                            Math.min(
+                                    64,
+                                    stack.getMaxStackSize()
+                            );
+
+                    int currentCount =
+                            current.isEmpty()
+                                    ? 0
+                                    : current.getCount();
+
+                    int space =
+                            maxStackSize - currentCount;
+
+                    if (space <= 0) {
+                        return stack;
+                    }
+
+                    int insertAmount =
+                            Math.min(
+                                    stack.getCount(),
+                                    space
+                            );
+
+                    if (!simulate) {
+
+                        if (current.isEmpty()) {
+
+                            ItemStack inserted =
+                                    stack.copy();
+
+                            inserted.setCount(
+                                    insertAmount
+                            );
+
+                            items.set(
+                                    INPUT_SLOT,
+                                    inserted
+                            );
+
+                        } else {
+
+                            current.grow(
+                                    insertAmount
+                            );
+                        }
+
+                        setChanged();
+                    }
+
+                    ItemStack remainder =
+                            stack.copy();
+
+                    remainder.shrink(
+                            insertAmount
+                    );
+
+                    return remainder;
+                }
+
+                @Override
+                public ItemStack extractItem(
+                        int slot,
+                        int amount,
+                        boolean simulate
+                ) {
+
+                    // 出力スロット以外からは取り出せない
+                    if (slot < OUTPUT_1_SLOT
+                            || slot > OUTPUT_3_SLOT) {
+
+                        return ItemStack.EMPTY;
+                    }
+
+                    if (amount <= 0) {
+                        return ItemStack.EMPTY;
+                    }
+
+                    ItemStack current =
+                            items.get(slot);
+
+                    if (current.isEmpty()) {
+                        return ItemStack.EMPTY;
+                    }
+
+                    int extractAmount =
+                            Math.min(
+                                    amount,
+                                    current.getCount()
+                            );
+
+                    ItemStack result =
+                            current.copy();
+
+                    result.setCount(
+                            extractAmount
+                    );
+
+                    if (!simulate) {
+
+                        current.shrink(
+                                extractAmount
+                        );
+
+                        setChanged();
+                    }
+
+                    return result;
+                }
+
+                @Override
+                public int getSlotLimit(int slot) {
+                    return 64;
+                }
+
+                @Override
+                public boolean isItemValid(
+                        int slot,
+                        ItemStack stack
+                ) {
+
+                    return slot == INPUT_SLOT;
+                }
+            };
 
     private final ContainerData containerData =
             new ContainerData() {
@@ -58,7 +241,11 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 }
 
                 @Override
-                public void set(int index, int value) {
+                public void set(
+                        int index,
+                        int value
+                ) {
+
                     if (index == 0) {
                         progress = value;
                     }
@@ -74,6 +261,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             BlockPos pos,
             BlockState state
     ) {
+
         super(
                 com.himataku.nmo.ModBlockEntities.CRUSHER.get(),
                 pos,
@@ -87,65 +275,55 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             BlockState state,
             CrusherBlockEntity crusher
     ) {
+
         if (level.isClientSide()) {
             return;
         }
 
-        CrusherRecipe recipe = crusher.getRecipe();
+        CrusherRecipe recipe =
+                crusher.getRecipe();
 
         if (recipe == null) {
             crusher.progress = 0;
             return;
         }
 
-        if (crusher.items.get(INPUT_SLOT).isEmpty()) {
+        if (crusher.items
+                .get(INPUT_SLOT)
+                .isEmpty()) {
+
             crusher.progress = 0;
             return;
         }
 
-        /*
-         * すべての出力結果を
-         * 3つの出力スロットへ収納できるか確認する。
-         */
         if (!crusher.canOutput(recipe)) {
             crusher.progress = 0;
             return;
         }
 
-        /*
-         * 100 FE/tick必要。
-         */
-        if (
-                crusher.energyStorage.getEnergyStored()
-                        < ENERGY_PER_TICK
-        ) {
+        if (crusher.energyStorage
+                .getEnergyStored()
+                < ENERGY_PER_TICK) {
+
             return;
         }
 
-        /*
-         * 実際に100 FE消費する。
-         */
         int extracted =
                 crusher.energyStorage.extractEnergy(
                         ENERGY_PER_TICK,
                         false
                 );
 
-        /*
-         * 念のため実際に100 FE取り出せなかった場合は
-         * 処理を進めない。
-         */
         if (extracted < ENERGY_PER_TICK) {
             return;
         }
 
         crusher.progress++;
 
-        /*
-         * 20 tickで1回処理。
-         */
         if (crusher.progress >= PROCESS_TIME) {
+
             crusher.processRecipe(recipe);
+
             crusher.progress = 0;
         }
 
@@ -173,13 +351,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 .orElse(null);
     }
 
-    /*
-     * 3つの出力結果を、
-     * 3つの出力スロットへ収納できるか確認する。
-     *
-     * 同じアイテムが別スロットに存在していても、
-     * そのスロットへまとめられるようにする。
-     */
     private boolean canOutput(
             CrusherRecipe recipe
     ) {
@@ -194,15 +365,16 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 );
 
         for (int i = 0; i < 3; i++) {
+
             simulated.set(
                     i,
-                    items.get(OUTPUT_1_SLOT + i).copy()
+                    items.get(
+                            OUTPUT_1_SLOT + i
+                    ).copy()
             );
         }
 
-        for (
-                ItemStack output : outputs
-        ) {
+        for (ItemStack output : outputs) {
 
             if (output.isEmpty()) {
                 continue;
@@ -210,9 +382,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
 
             boolean inserted = false;
 
-            /*
-             * まず同じアイテムが入っているスロットを探す。
-             */
             for (int i = 0; i < 3; i++) {
 
                 ItemStack current =
@@ -222,26 +391,23 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                     continue;
                 }
 
-                if (
-                        !ItemStack.isSameItemSameComponents(
-                                current,
-                                output
-                        )
-                ) {
+                if (!ItemStack.isSameItemSameComponents(
+                        current,
+                        output
+                )) {
                     continue;
                 }
 
-                if (
-                        current.getCount()
-                                + output.getCount()
-                                <= current.getMaxStackSize()
-                ) {
+                if (current.getCount()
+                        + output.getCount()
+                        <= current.getMaxStackSize()) {
 
                     current.grow(
                             output.getCount()
                     );
 
                     inserted = true;
+
                     break;
                 }
             }
@@ -250,9 +416,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 continue;
             }
 
-            /*
-             * 同じアイテムがなければ空きスロットへ。
-             */
             for (int i = 0; i < 3; i++) {
 
                 if (simulated.get(i).isEmpty()) {
@@ -263,13 +426,11 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                     );
 
                     inserted = true;
+
                     break;
                 }
             }
 
-            /*
-             * 3スロット全部使えなければ処理不可。
-             */
             if (!inserted) {
                 return false;
             }
@@ -278,33 +439,26 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
         return true;
     }
 
-    /*
-     * Recipeを実際に処理する。
-     */
     private void processRecipe(
             CrusherRecipe recipe
     ) {
 
-        /*
-         * 入力を1個消費。
-         */
         items.get(INPUT_SLOT).shrink(1);
 
         ItemStack[] outputs =
                 recipe.getResults();
 
-        for (
-                ItemStack output : outputs
-        ) {
+        for (ItemStack recipeOutput : outputs) {
 
-            if (output.isEmpty()) {
+            if (recipeOutput.isEmpty()) {
                 continue;
             }
 
-            boolean inserted = false;
+            ItemStack output =
+                    recipeOutput.copy();
 
             /*
-             * まず同じアイテムのスロットへ入れる。
+             * まず既存の同じアイテムに追加
              */
             for (
                     int i = OUTPUT_1_SLOT;
@@ -319,12 +473,10 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                     continue;
                 }
 
-                if (
-                        !ItemStack.isSameItemSameComponents(
-                                current,
-                                output
-                        )
-                ) {
+                if (!ItemStack.isSameItemSameComponents(
+                        current,
+                        output
+                )) {
                     continue;
                 }
 
@@ -343,8 +495,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                     current.grow(amount);
 
                     output.shrink(amount);
-
-                    inserted = true;
                 }
 
                 if (output.isEmpty()) {
@@ -357,7 +507,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             }
 
             /*
-             * まだ残っているなら空きスロットへ。
+             * 空いている出力スロットへ入れる
              */
             for (
                     int i = OUTPUT_1_SLOT;
@@ -379,23 +529,17 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
 
                 output.setCount(0);
 
-                inserted = true;
-
                 break;
-            }
-
-            /*
-             * canOutput()で事前確認しているため、
-             * 通常ここには到達しない。
-             */
-            if (!inserted) {
-                return;
             }
         }
     }
 
     public EnergyStorage getEnergyStorage() {
         return energyStorage;
+    }
+
+    public IItemHandler getItemHandler() {
+        return itemHandler;
     }
 
     public ContainerData getContainerData() {
@@ -470,11 +614,10 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             return false;
         }
 
-        if (
-                level.getBlockEntity(
-                        worldPosition
-                ) != this
-        ) {
+        if (level.getBlockEntity(
+                worldPosition
+        ) != this) {
+
             return false;
         }
 

@@ -101,6 +101,42 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> TITAN_BLOCK =
+            BLOCKS.register("titan_block", () ->
+                    new Block(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.STONE)
+                                    .lightLevel(state -> 7)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
+    public static final DeferredBlock<Block> TITAN_ORE =
+            BLOCKS.register("titan_ore", () ->
+                    new Block(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.STONE)
+                                    .lightLevel(state -> 7)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
+    public static final DeferredBlock<Block> MONAZITE_SAND =
+            BLOCKS.register("monazite_sand", () ->
+                    new Block(
+                            BlockBehaviour.Properties.of()
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.SAND)
+                                    .speedFactor(0.75f)
+                    )
+            );
+
+
+
     public static final DeferredBlock<Block> CRUSHER_ITEM =
             registerBlockItem("crusher", CRUSHER);
 
@@ -121,6 +157,16 @@ public class AllBlock {
 
     public static final DeferredBlock<Block> DEEPSLATE_TUNGSTEN_ORE_ITEM =
             registerBlockItem("deepslate_tungsten_ore", DEEPSLATE_TUNGSTEN_ORE);
+
+    public static final DeferredBlock<Block> TITAN_BLOCK_ITEM =
+            registerBlockItem("titan_block", TITAN_BLOCK);
+
+    public static final DeferredBlock<Block> TITAN_ORE_ITEM =
+            registerBlockItem("titan_ore", TITAN_ORE);
+
+    public static final DeferredBlock<Block> MONAZITE_SAND_ITEM =
+            registerBlockItem("monazite_sand", MONAZITE_SAND);
+
 
     private static DeferredBlock<Block> registerBlockItem(
             String name,

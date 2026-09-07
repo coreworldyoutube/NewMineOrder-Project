@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,6 +49,46 @@ public class CrusherBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected void onRemove(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            BlockState newState,
+            boolean movedByPiston
+    ) {
+        if (!state.is(newState.getBlock())) {
+
+            BlockEntity blockEntity =
+                    level.getBlockEntity(pos);
+
+            if (blockEntity instanceof CrusherBlockEntity crusher) {
+                Containers.dropContents(
+                        level,
+                        pos,
+                        crusher
+                );
+            }
+
+            super.onRemove(
+                    state,
+                    level,
+                    pos,
+                    newState,
+                    movedByPiston
+            );
+
+        } else {
+            super.onRemove(
+                    state,
+                    level,
+                    pos,
+                    newState,
+                    movedByPiston
+            );
+        }
+    }
+
+    @Override
     protected InteractionResult useWithoutItem(
             BlockState state,
             Level level,
@@ -63,7 +104,8 @@ public class CrusherBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+        BlockEntity blockEntity =
+                level.getBlockEntity(pos);
 
         if (!(blockEntity instanceof CrusherBlockEntity crusher)) {
             return InteractionResult.PASS;
