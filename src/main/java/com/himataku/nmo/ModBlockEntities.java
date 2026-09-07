@@ -1,6 +1,8 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlockEntity;
+
+import com.himataku.nmo.ElectricFurnace.ElectricFurnaceBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -23,6 +25,18 @@ public class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             CrusherBlockEntity::new,
                             com.himataku.nmo.customblock.AllBlock.CRUSHER.get()
+                    ).build(null)
+            );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ElectricFurnaceBlockEntity>
+            > ELECTRIC_FURNACE =
+            BLOCK_ENTITY_TYPES.register(
+                    "electric_furnace",
+                    () -> BlockEntityType.Builder.of(
+                            ElectricFurnaceBlockEntity::new,
+                            com.himataku.nmo.customblock.AllBlock.ELECTRIC_FURNACE.get()
                     ).build(null)
             );
 }

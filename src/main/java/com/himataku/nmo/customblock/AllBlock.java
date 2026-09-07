@@ -1,6 +1,7 @@
 package com.himataku.nmo.customblock;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlock;
+import com.himataku.nmo.ElectricFurnace.ElectricFurnace;
 import com.himataku.nmo.NewMineOrder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -135,10 +136,24 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> ELECTRIC_FURNACE =
+            BLOCKS.register("electric_furnace", () ->
+                    new ElectricFurnace(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
 
 
     public static final DeferredBlock<Block> CRUSHER_ITEM =
             registerBlockItem("crusher", CRUSHER);
+
+    public static final DeferredBlock<Block> ELECTRIC_FURNACE_ITEM =
+            registerBlockItem("electric_furnace", ELECTRIC_FURNACE);
 
     public static final DeferredBlock<Block> BERYLLIUM_BLOCK_ITEM =
             registerBlockItem("beryllium_block", BERYLLIUM_BLOCK);
