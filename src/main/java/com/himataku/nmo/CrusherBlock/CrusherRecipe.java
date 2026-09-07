@@ -4,9 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -20,11 +23,11 @@ public class CrusherRecipe
         implements Recipe<CrusherRecipeInput> {
 
     private final Ingredient input;
-    private final ItemStack[] results;
+    private final ResultEntry[] results;
 
     public CrusherRecipe(
             Ingredient input,
-            ItemStack[] results
+            ResultEntry[] results
     ) {
         this.input = input;
         this.results = results;
@@ -34,7 +37,7 @@ public class CrusherRecipe
         return input;
     }
 
-    public ItemStack[] getResults() {
+    public ResultEntry[] getResults() {
         return results;
     }
 
@@ -57,7 +60,7 @@ public class CrusherRecipe
             return ItemStack.EMPTY;
         }
 
-        return results[0].copy();
+        return results[0].stack().copy();
     }
 
     @Override
@@ -76,7 +79,7 @@ public class CrusherRecipe
             return ItemStack.EMPTY;
         }
 
-        return results[0].copy();
+        return results[0].stack().copy();
     }
 
     @Override
@@ -89,6 +92,24 @@ public class CrusherRecipe
         return Type.INSTANCE;
     }
 
+    /*
+     * ========================================
+     * Result
+     * ========================================
+     */
+
+    public record ResultEntry(
+            ItemStack stack,
+            float chance
+    ) {
+    }
+
+    /*
+     * ========================================
+     * Recipe Type
+     * ========================================
+     */
+
     public static class Type
             implements RecipeType<CrusherRecipe> {
 
@@ -96,18 +117,92 @@ public class CrusherRecipe
                 new Type();
     }
 
+    /*
+     * ========================================
+     * Serializer
+     * ========================================
+     */
+
     public static class Serializer
             implements RecipeSerializer<CrusherRecipe> {
 
         public static final Serializer INSTANCE =
                 new Serializer();
 
-        private static final Codec<List<ItemStack>> RESULTS_CODEC =
-                ItemStack.CODEC.listOf();
+        /*
+         * ----------------------------------------
+         * Item ID Codec
+         * ----------------------------------------
+         */
+
+        private static final Codec<Item> ITEM_CODEC =
+                BuiltInRegistries.ITEM
+                        .byNameCodec();
+
+        /*
+         * ----------------------------------------
+         * Result Codec
+         * ----------------------------------------
+         */
+
+        private static final MapCodec<ResultEntry> RESULT_CODEC =
+                RecordCodecBuilder.mapCodec(
+                        instance -> instance.group(
+
+                                ITEM_CODEC
+                                        .fieldOf("id")
+                                        .forGetter(
+                                                result ->
+                                                        result.stack()
+                                                                .getItem()
+                                        ),
+
+                                Codec.INT
+                                        .optionalFieldOf(
+                                                "count",
+                                                1
+                                        )
+                                        .forGetter(
+                                                result ->
+                                                        result.stack()
+                                                                .getCount()
+                                        ),
+
+                                Codec.FLOAT
+                                        .optionalFieldOf(
+                                                "chance",
+                                                1.0F
+                                        )
+                                        .forGetter(
+                                                ResultEntry::chance
+                                        )
+
+                        ).apply(
+                                instance,
+                                (item, count, chance) ->
+                                        new ResultEntry(
+                                                new ItemStack(
+                                                        item,
+                                                        count
+                                                ),
+                                                chance
+                                        )
+                        )
+                );
+
+        private static final Codec<List<ResultEntry>> RESULTS_CODEC =
+                RESULT_CODEC.codec().listOf();
+
+        /*
+         * ----------------------------------------
+         * Recipe Codec
+         * ----------------------------------------
+         */
 
         public static final MapCodec<CrusherRecipe> CODEC =
                 RecordCodecBuilder.mapCodec(
                         instance -> instance.group(
+
                                 Ingredient.CODEC_NONEMPTY
                                         .fieldOf("ingredient")
                                         .forGetter(
@@ -122,27 +217,56 @@ public class CrusherRecipe
                                                                 recipe.results
                                                         )
                                         )
+
                         ).apply(
                                 instance,
                                 (input, results) ->
                                         new CrusherRecipe(
                                                 input,
                                                 results.toArray(
-                                                        ItemStack[]::new
+                                                        ResultEntry[]::new
                                                 )
                                         )
                         )
                 );
+
+        /*
+         * ----------------------------------------
+         * Network Result Stream Codec
+         * ----------------------------------------
+         */
+
+        public static final StreamCodec<
+                RegistryFriendlyByteBuf,
+                ResultEntry
+                > RESULT_STREAM_CODEC =
+                StreamCodec.composite(
+
+                        ItemStack.STREAM_CODEC,
+                        ResultEntry::stack,
+
+                        ByteBufCodecs.FLOAT,
+                        ResultEntry::chance,
+
+                        ResultEntry::new
+                );
+
+        /*
+         * ----------------------------------------
+         * Network Recipe Stream Codec
+         * ----------------------------------------
+         */
 
         public static final StreamCodec<
                 RegistryFriendlyByteBuf,
                 CrusherRecipe
                 > STREAM_CODEC =
                 StreamCodec.composite(
+
                         Ingredient.CONTENTS_STREAM_CODEC,
                         CrusherRecipe::getInput,
 
-                        ItemStack.STREAM_CODEC.apply(
+                        RESULT_STREAM_CODEC.apply(
                                 ByteBufCodecs.list()
                         ),
                         recipe ->
@@ -152,7 +276,7 @@ public class CrusherRecipe
                                 new CrusherRecipe(
                                         input,
                                         results.toArray(
-                                                ItemStack[]::new
+                                                ResultEntry[]::new
                                         )
                                 )
                 );

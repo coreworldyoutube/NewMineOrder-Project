@@ -6,11 +6,18 @@
   "results": [
     {
       "id": "minecraft:raw_iron",
-      "count": 2
+      "count": 1,
+      "chance": 1.0
     },
     {
       "id": "minecraft:gravel",
-      "count": 1
+      "count": 1,
+      "chance": 0.25
+    },
+    {
+      "id": "minecraft:raw_iron",
+      "count": 1,
+      "chance": 0.05
     }
   ]
 }

@@ -355,7 +355,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             CrusherRecipe recipe
     ) {
 
-        ItemStack[] outputs =
+        CrusherRecipe.ResultEntry[] outputs =
                 recipe.getResults();
 
         NonNullList<ItemStack> simulated =
@@ -374,7 +374,9 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             );
         }
 
-        for (ItemStack output : outputs) {
+        for (CrusherRecipe.ResultEntry result : outputs) {
+
+            ItemStack output = result.stack();
 
             if (output.isEmpty()) {
                 continue;
@@ -445,12 +447,23 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
 
         items.get(INPUT_SLOT).shrink(1);
 
-        ItemStack[] outputs =
+        CrusherRecipe.ResultEntry[] outputs =
                 recipe.getResults();
 
-        for (ItemStack recipeOutput : outputs) {
+        for (CrusherRecipe.ResultEntry result : outputs) {
+
+            ItemStack recipeOutput =
+                    result.stack();
 
             if (recipeOutput.isEmpty()) {
+                continue;
+            }
+
+            if (this.level == null) {
+                continue;
+            }
+
+            if (this.level.random.nextFloat() > result.chance()) {
                 continue;
             }
 
