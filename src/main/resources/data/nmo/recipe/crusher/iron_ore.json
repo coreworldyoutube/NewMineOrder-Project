@@ -5,11 +5,11 @@
   },
   "results": [
     {
-      "item": "minecraft:raw_iron",
+      "id": "minecraft:raw_iron",
       "count": 2
     },
     {
-      "item": "minecraft:gravel",
+      "id": "minecraft:gravel",
       "count": 1
     }
   ]

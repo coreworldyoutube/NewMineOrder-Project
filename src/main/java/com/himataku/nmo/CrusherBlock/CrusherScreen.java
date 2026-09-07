@@ -37,40 +37,111 @@ public class CrusherScreen
             int mouseX,
             int mouseY
     ) {
+
         int x = leftPos;
         int y = topPos;
 
         /*
-         * GUI本体
+         * 仮背景
          *
-         * テクスチャがまだ存在しなくても
-         * GUIそのものは表示できるようにする。
+         * 後で
+         *
+         * assets/nmo/textures/gui/crusher.png
+         *
+         * を用意すれば、この部分を
+         * blit()に変更できる。
          */
+
         graphics.fill(
                 x,
                 y,
                 x + imageWidth,
                 y + imageHeight,
-                0xFF202020
+                0xFF201020
         );
 
         /*
-         * 入力・出力エリア
+         * ピンクの外枠
          */
         graphics.fill(
-                x + 45,
-                y + 24,
-                x + 82,
-                y + 61,
-                0xFF303030
+                x,
+                y,
+                x + imageWidth,
+                y + 2,
+                0xFFFF00FF
         );
 
         graphics.fill(
-                x + 106,
-                y + 7,
-                x + 143,
+                x,
+                y + imageHeight - 2,
+                x + imageWidth,
+                y + imageHeight,
+                0xFFFF00FF
+        );
+
+        graphics.fill(
+                x,
+                y,
+                x + 2,
+                y + imageHeight,
+                0xFFFF00FF
+        );
+
+        graphics.fill(
+                x + imageWidth - 2,
+                y,
+                x + imageWidth,
+                y + imageHeight,
+                0xFFFF00FF
+        );
+
+        /*
+         * 入力スロット周辺
+         */
+        graphics.fill(
+                x + 52,
+                y + 31,
+                x + 71,
+                y + 50,
+                0xFF302030
+        );
+
+        /*
+         * 出力スロット周辺
+         */
+        graphics.fill(
+                x + 112,
+                y + 13,
+                x + 131,
+                y + 32,
+                0xFF302030
+        );
+
+        graphics.fill(
+                x + 112,
+                y + 31,
+                x + 131,
+                y + 50,
+                0xFF302030
+        );
+
+        graphics.fill(
+                x + 112,
+                y + 49,
+                x + 131,
                 y + 68,
-                0xFF303030
+                0xFF302030
+        );
+
+        /*
+         * 進捗バー背景
+         */
+        graphics.fill(
+                x + 76,
+                y + 34,
+                x + 106,
+                y + 42,
+                0xFF301530
         );
 
         /*
@@ -82,19 +153,33 @@ public class CrusherScreen
         int processTime =
                 menu.getProcessTime();
 
-        if (processTime > 0 && progress > 0) {
+        if (
+                processTime > 0
+                        && progress > 0
+        ) {
 
             int width =
-                    progress * 24 / processTime;
+                    progress * 30 / processTime;
 
             graphics.fill(
-                    x + 82,
-                    y + 32,
-                    x + 82 + width,
-                    y + 40,
-                    0xFFAAAAAA
+                    x + 76,
+                    y + 34,
+                    x + 76 + width,
+                    y + 42,
+                    0xFFFF00FF
             );
         }
+
+        /*
+         * FEバー背景
+         */
+        graphics.fill(
+                x + 154,
+                y + 30,
+                x + 162,
+                y + 84,
+                0xFF301530
+        );
 
         /*
          * FEバー
@@ -111,21 +196,40 @@ public class CrusherScreen
                     energy * 50 / maxEnergy;
 
             graphics.fill(
-                    x + 155,
+                    x + 154,
                     y + 84 - height,
-                    x + 163,
+                    x + 162,
                     y + 84,
-                    0xFFFFAA00
+                    0xFFFF00FF
             );
         }
 
         /*
-         * スロットの枠
+         * スロット枠
          */
-        drawSlot(graphics, x + 53, y + 32);
-        drawSlot(graphics, x + 113, y + 14);
-        drawSlot(graphics, x + 113, y + 32);
-        drawSlot(graphics, x + 113, y + 50);
+        drawSlot(
+                graphics,
+                x + 53,
+                y + 32
+        );
+
+        drawSlot(
+                graphics,
+                x + 113,
+                y + 14
+        );
+
+        drawSlot(
+                graphics,
+                x + 113,
+                y + 32
+        );
+
+        drawSlot(
+                graphics,
+                x + 113,
+                y + 50
+        );
     }
 
     private void drawSlot(
@@ -133,12 +237,13 @@ public class CrusherScreen
             int x,
             int y
     ) {
+
         graphics.fill(
                 x,
                 y,
                 x + 18,
                 y + 18,
-                0xFF8A8A8A
+                0xFFFF00FF
         );
 
         graphics.fill(
@@ -146,7 +251,7 @@ public class CrusherScreen
                 y + 1,
                 x + 17,
                 y + 17,
-                0xFF202020
+                0xFF201020
         );
     }
 
@@ -156,6 +261,7 @@ public class CrusherScreen
             int mouseX,
             int mouseY
     ) {
+
         graphics.drawString(
                 this.font,
                 this.title,
@@ -191,6 +297,7 @@ public class CrusherScreen
             int mouseY,
             float partialTick
     ) {
+
         renderBackground(
                 graphics,
                 mouseX,
