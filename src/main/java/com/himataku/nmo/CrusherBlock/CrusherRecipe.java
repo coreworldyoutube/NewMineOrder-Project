@@ -1,4 +1,4 @@
-package com.himataku.nmo.recipe;
+package com.himataku.nmo.CrusherBlock;
 
 import com.himataku.nmo.CrusherBlock.CrusherRecipeInput;
 import com.mojang.serialization.Codec;
