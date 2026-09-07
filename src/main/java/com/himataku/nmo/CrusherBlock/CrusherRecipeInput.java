@@ -3,15 +3,20 @@ package com.himataku.nmo.CrusherBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 
-public record CrusherRecipeInput(
-        ItemStack input
-) implements RecipeInput {
+public class CrusherRecipeInput implements RecipeInput {
+
+    private final ItemStack input;
+
+    public CrusherRecipeInput(ItemStack input) {
+        this.input = input;
+    }
 
     @Override
     public ItemStack getItem(int index) {
-
         if (index != 0) {
-            return ItemStack.EMPTY;
+            throw new IndexOutOfBoundsException(
+                    "CrusherRecipeInput only has one slot"
+            );
         }
 
         return input;

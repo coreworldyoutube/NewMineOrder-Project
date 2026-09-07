@@ -1,10 +1,8 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherMenu;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
-
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

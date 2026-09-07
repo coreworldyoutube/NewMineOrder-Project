@@ -1,8 +1,5 @@
 package com.himataku.nmo.CrusherBlock;
 
-import com.himataku.nmo.ModBlockEntities;
-import com.himataku.nmo.recipe.CrusherRecipe;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -14,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 public class CrusherBlockEntity extends BlockEntity implements Container {
@@ -28,8 +24,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
     public static final int INVENTORY_SIZE = 4;
 
     public static final int MAX_ENERGY = 10_000;
-
-    // 1 tickあたり100 FE消費
     public static final int ENERGY_PER_TICK = 100;
 
     public static final int PROCESS_TIME = 20;
@@ -49,7 +43,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                     0
             );
 
-    private final ContainerData data =
+    private final ContainerData containerData =
             new ContainerData() {
 
                 @Override
@@ -81,7 +75,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             BlockState state
     ) {
         super(
-                ModBlockEntities.CRUSHER.get(),
+                com.himataku.nmo.ModBlockEntities.CRUSHER.get(),
                 pos,
                 state
         );
@@ -93,13 +87,11 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             BlockState state,
             CrusherBlockEntity crusher
     ) {
-
         if (level.isClientSide()) {
             return;
         }
 
-        CrusherRecipe recipe =
-                crusher.getRecipe();
+        CrusherRecipe recipe = crusher.getRecipe();
 
         if (recipe == null) {
             crusher.progress = 0;
@@ -116,10 +108,8 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             return;
         }
 
-        if (
-                crusher.energyStorage.getEnergyStored()
-                        < ENERGY_PER_TICK
-        ) {
+        if (crusher.energyStorage.getEnergyStored()
+                < ENERGY_PER_TICK) {
             return;
         }
 
@@ -139,7 +129,6 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
     }
 
     private CrusherRecipe getRecipe() {
-
         if (level == null) {
             return null;
         }
@@ -159,9 +148,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 .orElse(null);
     }
 
-    private boolean canOutput(
-            CrusherRecipe recipe
-    ) {
+    private boolean canOutput(CrusherRecipe recipe) {
 
         ItemStack[] outputs =
                 recipe.getResults();
@@ -172,8 +159,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 i++
         ) {
 
-            ItemStack output =
-                    outputs[i];
+            ItemStack output = outputs[i];
 
             if (output.isEmpty()) {
                 continue;
@@ -189,12 +175,10 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
                 continue;
             }
 
-            if (
-                    !ItemStack.isSameItemSameComponents(
-                            current,
-                            output
-                    )
-            ) {
+            if (!ItemStack.isSameItemSameComponents(
+                    current,
+                    output
+            )) {
                 return false;
             }
 
@@ -259,7 +243,11 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
     }
 
     public ContainerData getContainerData() {
-        return data;
+        return containerData;
+    }
+
+    public int getProgress() {
+        return progress;
     }
 
     @Override
@@ -322,11 +310,19 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             Player player
     ) {
 
-        return level != null
-                && level.getBlockEntity(
-                worldPosition
-        ) == this
-                && player.distanceToSqr(
+        if (level == null) {
+            return false;
+        }
+
+        if (
+                level.getBlockEntity(
+                        worldPosition
+                ) != this
+        ) {
+            return false;
+        }
+
+        return player.distanceToSqr(
                 worldPosition.getX() + 0.5,
                 worldPosition.getY() + 0.5,
                 worldPosition.getZ() + 0.5
@@ -338,6 +334,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             int slot,
             ItemStack stack
     ) {
+
         return slot == INPUT_SLOT;
     }
 
@@ -350,6 +347,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
     public boolean isEmpty() {
 
         for (ItemStack item : items) {
+
             if (!item.isEmpty()) {
                 return false;
             }
@@ -362,6 +360,7 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
     public void clearContent() {
 
         for (int i = 0; i < INVENTORY_SIZE; i++) {
+
             items.set(
                     i,
                     ItemStack.EMPTY
@@ -419,11 +418,8 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
         progress =
                 tag.getInt("Progress");
 
-        int savedEnergy =
-                tag.getInt("Energy");
-
         energyStorage.receiveEnergy(
-                savedEnergy,
+                tag.getInt("Energy"),
                 false
         );
     }
