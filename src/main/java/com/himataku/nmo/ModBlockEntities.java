@@ -22,7 +22,7 @@ public class ModBlockEntities {
                     "crusher",
                     () -> BlockEntityType.Builder.of(
                             CrusherBlockEntity::new,
-                            com.himataku.nmo.customblock.AllBlock.CRUSHER
+                            com.himataku.nmo.customblock.AllBlock.CRUSHER.get()
                     ).build(null)
             );
 }

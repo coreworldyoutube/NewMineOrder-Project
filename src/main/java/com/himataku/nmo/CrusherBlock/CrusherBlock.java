@@ -1,31 +1,35 @@
 package com.himataku.nmo.CrusherBlock;
 
-import com.himataku.nmo.customblock.AllBlock;
+import com.himataku.nmo.ModBlockEntities;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 
 public class CrusherBlock extends BaseEntityBlock {
 
-    public static final net.neoforged.neoforge.registries.DeferredBlockEntityType<
-            CrusherBlockEntity> CRUSHER_BLOCK_ENTITY =
-            null;
+    public static final MapCodec<CrusherBlock> CODEC =
+            simpleCodec(CrusherBlock::new);
 
-    public CrusherBlock(
-            BlockBehaviour.Properties properties
-    ) {
+    public CrusherBlock(BlockBehaviour.Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -42,19 +46,6 @@ public class CrusherBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
-            net.minecraft.world.item.ItemStack stack,
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Player player,
-            InteractionHand hand,
-            BlockHitResult hit
-    ) {
-        return InteractionResult.PASS;
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(
             BlockState state,
             Level level,
@@ -62,7 +53,6 @@ public class CrusherBlock extends BaseEntityBlock {
             Player player,
             BlockHitResult hit
     ) {
-
         if (!level.isClientSide()) {
 
             BlockEntity blockEntity =
@@ -70,31 +60,27 @@ public class CrusherBlock extends BaseEntityBlock {
 
             if (blockEntity instanceof CrusherBlockEntity crusher) {
 
-                player.openMenu(
-                        new net.minecraft.world.MenuProvider() {
+                player.openMenu(new MenuProvider() {
 
-                            @Override
-                            public net.minecraft.network.chat.Component getDisplayName() {
-                                return net.minecraft.network.chat.Component.literal(
-                                        "Crusher"
-                                );
-                            }
+                    @Override
+                    public Component getDisplayName() {
+                        return Component.literal("Crusher");
+                    }
 
-                            @Override
-                            public net.minecraft.world.inventory.AbstractContainerMenu createMenu(
-                                    int id,
-                                    net.minecraft.world.entity.player.Inventory inventory,
-                                    Player player
-                            ) {
-                                return new CrusherMenu(
-                                        id,
-                                        inventory,
-                                        crusher,
-                                        crusher.getContainerData()
-                                );
-                            }
-                        }
-                );
+                    @Override
+                    public AbstractContainerMenu createMenu(
+                            int id,
+                            Inventory inventory,
+                            Player player
+                    ) {
+                        return new CrusherMenu(
+                                id,
+                                inventory,
+                                crusher,
+                                crusher.getContainerData()
+                        );
+                    }
+                });
             }
         }
 
@@ -109,17 +95,14 @@ public class CrusherBlock extends BaseEntityBlock {
             BlockState state,
             net.minecraft.world.level.block.entity.BlockEntityType<T> type
     ) {
-
         if (level.isClientSide()) {
             return null;
         }
 
-        return (level1, pos, state1, blockEntity) ->
-                CrusherBlockEntity.tick(
-                        level1,
-                        pos,
-                        state1,
-                        (CrusherBlockEntity) blockEntity
-                );
+        return createTickerHelper(
+                type,
+                ModBlockEntities.CRUSHER.get(),
+                CrusherBlockEntity::tick
+        );
     }
 }
