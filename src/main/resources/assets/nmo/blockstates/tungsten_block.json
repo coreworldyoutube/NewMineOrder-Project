@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nmo:block/tungsten_block"
+    }
+  }
+}
