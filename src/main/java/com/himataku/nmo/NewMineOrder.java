@@ -18,5 +18,6 @@ public class NewMineOrder {
         AllItem.ITEMS.register(bus);
         NmoTab.TABS.register(bus);
         ModBlockEntities.BLOCK_ENTITY_TYPES.register(bus);
+        //bus.addListener(NewMineOrder::registerCapabilities);
     }
 }

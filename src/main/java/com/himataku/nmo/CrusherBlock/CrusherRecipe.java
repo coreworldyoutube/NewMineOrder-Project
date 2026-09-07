@@ -1,13 +1,14 @@
 package com.himataku.nmo.recipe;
 
-import com.himataku.nmo.customblock.AllBlock;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.himataku.nmo.CrusherBlock.CrusherRecipeInput;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -15,66 +16,131 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public class CrusherRecipe
         implements Recipe<CrusherRecipeInput> {
 
+    // =========================================================
+    // レシピデータ
+    // =========================================================
+
     private final Ingredient input;
+
     private final ItemStack[] results;
+
+
+    // =========================================================
+    // コンストラクタ
+    // =========================================================
 
     public CrusherRecipe(
             Ingredient input,
             ItemStack[] results
     ) {
+
         this.input = input;
         this.results = results;
     }
 
+
+    // =========================================================
+    // 結果取得
+    // =========================================================
+
     public ItemStack[] getResults() {
         return results;
     }
+
+
+    // =========================================================
+    // レシピ判定
+    // =========================================================
 
     @Override
     public boolean matches(
             CrusherRecipeInput input,
             Level level
     ) {
+
         return this.input.test(
                 input.getItem(0)
         );
     }
+
+
+    // =========================================================
+    // 作成
+    // =========================================================
 
     @Override
     public ItemStack assemble(
             CrusherRecipeInput input,
             HolderLookup.Provider registries
     ) {
+
+        if (results.length == 0) {
+            return ItemStack.EMPTY;
+        }
+
         return results[0].copy();
     }
+
+
+    // =========================================================
+    // サイズ判定
+    // =========================================================
 
     @Override
     public boolean canCraftInDimensions(
             int width,
             int height
     ) {
+
         return true;
     }
+
+
+    // =========================================================
+    // JEI等で表示する代表結果
+    // =========================================================
 
     @Override
     public ItemStack getResultItem(
             HolderLookup.Provider registries
     ) {
+
+        if (results.length == 0) {
+            return ItemStack.EMPTY;
+        }
+
         return results[0].copy();
     }
+
+
+    // =========================================================
+    // Serializer
+    // =========================================================
 
     @Override
     public RecipeSerializer<?> getSerializer() {
         return Serializer.INSTANCE;
     }
 
+
+    // =========================================================
+    // Type
+    // =========================================================
+
     @Override
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
+
+
+    // =========================================================
+    // Recipe Type
+    // =========================================================
 
     public static class Type
             implements RecipeType<CrusherRecipe> {
@@ -86,110 +152,109 @@ public class CrusherRecipe
                 "crusher";
     }
 
+
+    // =========================================================
+    // Recipe Serializer
+    // =========================================================
+
     public static class Serializer
             implements RecipeSerializer<CrusherRecipe> {
 
         public static final Serializer INSTANCE =
                 new Serializer();
 
+
+        // =====================================================
+        // JSON Codec
+        // =====================================================
+
+        private static final Codec<List<ItemStack>> RESULTS_CODEC =
+                ItemStack.CODEC.listOf();
+
+
+        public static final MapCodec<CrusherRecipe> CODEC =
+                RecordCodecBuilder.mapCodec(
+                        instance -> instance.group(
+
+                                Ingredient.CODEC_NONEMPTY
+                                        .fieldOf("ingredient")
+                                        .forGetter(
+                                                recipe ->
+                                                        recipe.input
+                                        ),
+
+                                RESULTS_CODEC
+                                        .fieldOf("results")
+                                        .forGetter(
+                                                recipe ->
+                                                        List.of(
+                                                                recipe.results
+                                                        )
+                                        )
+
+                        ).apply(
+                                instance,
+                                (input, results) ->
+                                        new CrusherRecipe(
+                                                input,
+                                                results.toArray(
+                                                        ItemStack[]::new
+                                                )
+                                        )
+                        )
+                );
+
+
+        // =====================================================
+        // ネットワーク Codec
+        // =====================================================
+
         public static final StreamCodec<
                 RegistryFriendlyByteBuf,
                 CrusherRecipe
                 > STREAM_CODEC =
-                new StreamCodec<>() {
+                StreamCodec.composite(
 
-                    @Override
-                    public CrusherRecipe decode(
-                            RegistryFriendlyByteBuf buffer
-                    ) {
+                        Ingredient.CONTENTS_STREAM_CODEC,
+                        recipe ->
+                                recipe.input,
 
-                        Ingredient input =
-                                Ingredient.CONTENTS_STREAM_CODEC
-                                        .decode(buffer);
+                        ItemStack.STREAM_CODEC.apply(
+                                ByteBufCodecs.list()
+                        ),
+                        recipe ->
+                                List.of(recipe.results),
 
-                        int count =
-                                buffer.readVarInt();
+                        (input, results) ->
+                                new CrusherRecipe(
+                                        input,
+                                        results.toArray(
+                                                ItemStack[]::new
+                                        )
+                                )
+                );
 
-                        ItemStack[] results =
-                                new ItemStack[count];
 
-                        for (int i = 0; i < count; i++) {
-
-                            results[i] =
-                                    ItemStack.STREAM_CODEC
-                                            .decode(buffer);
-                        }
-
-                        return new CrusherRecipe(
-                                input,
-                                results
-                        );
-                    }
-
-                    @Override
-                    public void encode(
-                            RegistryFriendlyByteBuf buffer,
-                            CrusherRecipe recipe
-                    ) {
-
-                        Ingredient.CONTENTS_STREAM_CODEC
-                                .encode(
-                                        buffer,
-                                        recipe.input
-                                );
-
-                        buffer.writeVarInt(
-                                recipe.results.length
-                        );
-
-                        for (ItemStack result :
-                                recipe.results) {
-
-                            ItemStack.STREAM_CODEC
-                                    .encode(
-                                            buffer,
-                                            result
-                                    );
-                        }
-                    }
-                };
+        // =====================================================
+        // Codec
+        // =====================================================
 
         @Override
-        public com.mojang.serialization.MapCodec<CrusherRecipe> codec() {
-
-            return com.mojang.serialization.MapCodec
-                    .of(
-                            new com.mojang.serialization.MapEncoder<>() {
-
-                                @Override
-                                public <T> com.mojang.serialization.RecordBuilder<T> encode(
-                                        CrusherRecipe input,
-                                        com.mojang.serialization.DynamicOps<T> ops,
-                                        com.mojang.serialization.RecordBuilder<T> prefix
-                                ) {
-                                    return prefix;
-                                }
-                            },
-                            new com.mojang.serialization.MapDecoder<>() {
-
-                                @Override
-                                public <T> com.mojang.serialization.DataResult<CrusherRecipe> decode(
-                                        com.mojang.serialization.DynamicOps<T> ops,
-                                        com.mojang.serialization.MapLike<T> input
-                                ) {
-                                    return com.mojang.serialization.DataResult.error(
-                                            () -> "Use JSON codec"
-                                    );
-                                }
-                            }
-                    );
+        public MapCodec<CrusherRecipe> codec() {
+            return CODEC;
         }
+
+
+        // =====================================================
+        // Stream Codec
+        // =====================================================
 
         @Override
         public StreamCodec<
                 RegistryFriendlyByteBuf,
                 CrusherRecipe
                 > streamCodec() {
+
             return STREAM_CODEC;
         }
     }
