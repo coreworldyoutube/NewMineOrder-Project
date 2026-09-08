@@ -41,7 +41,7 @@ public class GeneratorMenu extends AbstractContainerMenu {
 
                     @Override
                     public boolean mayPickup(Player player) {
-                        return false;
+                        return true;
                     }
                 }
         );

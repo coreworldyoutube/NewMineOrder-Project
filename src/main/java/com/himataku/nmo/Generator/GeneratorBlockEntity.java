@@ -2,7 +2,6 @@ package com.himataku.nmo.Generator;
 
 import com.himataku.nmo.ModBlockEntities;
 import com.himataku.nmo.customblock.AllFluid;
-import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -81,17 +80,122 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
      * 外部Fluid Capability
      * =========================
      *
-     * タンク2つを1つのFluid Handlerとして公開する。
-     *
      * 0 = Water
+     *     → INPUT ONLY
+     *
      * 1 = Steam
+     *     → OUTPUT ONLY
      */
-    private final CombinedTankWrapper fluidHandler =
-            new CombinedTankWrapper(
-                    waterTank,
-                    steamTank
-            );
+    private final IFluidHandler fluidHandler =
+            new IFluidHandler() {
 
+                @Override
+                public int getTanks() {
+                    return 2;
+                }
+
+                @Override
+                public FluidStack getFluidInTank(int tank) {
+                    return switch (tank) {
+                        case 0 -> waterTank.getFluid();
+                        case 1 -> steamTank.getFluid();
+                        default -> FluidStack.EMPTY;
+                    };
+                }
+
+                @Override
+                public int getTankCapacity(int tank) {
+                    return switch (tank) {
+                        case 0 -> WATER_CAPACITY;
+                        case 1 -> STEAM_CAPACITY;
+                        default -> 0;
+                    };
+                }
+
+                @Override
+                public boolean isFluidValid(int tank, FluidStack stack) {
+                    return switch (tank) {
+                        case 0 ->
+                                stack.getFluid()
+                                        == net.minecraft.world.level.material.Fluids.WATER;
+
+                        case 1 ->
+                                stack.getFluid()
+                                        == AllFluid.STEAM.get();
+
+                        default -> false;
+                    };
+                }
+
+                @Override
+                public int fill(
+                        FluidStack resource,
+                        FluidAction action
+                ) {
+                    /*
+                     * 水 → INPUT
+                     */
+                    if (resource.getFluid()
+                            == net.minecraft.world.level.material.Fluids.WATER) {
+
+                        return waterTank.fill(
+                                resource,
+                                action
+                        );
+                    }
+
+                    /*
+                     * Steam → INPUT
+                     */
+                    if (resource.getFluid()
+                            == AllFluid.STEAM.get()) {
+
+                        return steamTank.fill(
+                                resource,
+                                action
+                        );
+                    }
+
+                    return 0;
+                }
+
+                @Override
+                public FluidStack drain(
+                        FluidStack resource,
+                        FluidAction action
+                ) {
+                    /*
+                     * SteamだけOUTPUT可能
+                     */
+                    if (resource.getFluid()
+                            == AllFluid.STEAM.get()) {
+
+                        return steamTank.drain(
+                                resource,
+                                action
+                        );
+                    }
+
+                    /*
+                     * 水は外部へ出さない
+                     */
+                    return FluidStack.EMPTY;
+                }
+
+                @Override
+                public FluidStack drain(
+                        int maxDrain,
+                        FluidAction action
+                ) {
+                    /*
+                     * SteamだけOUTPUT可能
+                     */
+                    return steamTank.drain(
+                            maxDrain,
+                            action
+                    );
+                }
+            };
     /*
      * =========================
      * Energy
@@ -243,7 +347,6 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
          */
 
         if (burnTime <= 0) {
-
             burnTime = 0;
 
             if (!fuelStack.isEmpty()) {
@@ -256,9 +359,6 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
                     maxBurnTime = fuelTime;
                     burnTime = fuelTime;
 
-                    /*
-                     * 燃料は燃焼開始時に1個消費
-                     */
                     fuelStack.shrink(1);
 
                     changed = true;
@@ -272,7 +372,8 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
          * =========================
          */
 
-        if (steamTank.getFluidAmount() >= STEAM_PER_TICK
+        if (!level.hasNeighborSignal(worldPosition)
+                && steamTank.getFluidAmount() >= STEAM_PER_TICK
                 && energyStorage.getEnergyStored() < ENERGY_CAPACITY) {
 
             FluidStack steam =
@@ -317,7 +418,7 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
             return 0;
         }
 
-        return stack.getBurnTime(null);
+        return stack.getBurnTime(null) / 2;
     }
 
     /*
@@ -362,22 +463,77 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
     }
 
     /*
-     * 燃料スロットからの通常取り出しは禁止
+     * =========================
+     * 燃料を取り出せるか
+     * =========================
+     *
+     * 燃焼中は取り出し不可。
+     * 燃焼していない場合のみ取り出せる。
      */
+    private boolean canRemoveFuel() {
+        return burnTime <= 0;
+    }
+
+    /*
+     * =========================
+     * 燃料を取り出す
+     * =========================
+     */
+
     @Override
     public ItemStack removeItem(
             int slot,
             int amount
     ) {
-        return ItemStack.EMPTY;
+        if (slot != 0) {
+            return ItemStack.EMPTY;
+        }
+
+        if (!canRemoveFuel()) {
+            return ItemStack.EMPTY;
+        }
+
+        if (fuelStack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        int removeAmount =
+                Math.min(
+                        amount,
+                        fuelStack.getCount()
+                );
+
+        ItemStack result =
+                fuelStack.split(removeAmount);
+
+        setChanged();
+
+        return result;
     }
 
     /*
-     * 燃料スロットからの直接取り出しは禁止
+     * =========================
+     * 燃料を直接取り出す
+     * =========================
      */
+
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
-        return ItemStack.EMPTY;
+        if (slot != 0) {
+            return ItemStack.EMPTY;
+        }
+
+        if (!canRemoveFuel()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack result = fuelStack;
+
+        fuelStack = ItemStack.EMPTY;
+
+        setChanged();
+
+        return result;
     }
 
     /*
