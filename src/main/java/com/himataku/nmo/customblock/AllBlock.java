@@ -1,6 +1,7 @@
 package com.himataku.nmo.customblock;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlock;
+import com.himataku.nmo.Distillation.DistillationBlock;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnace;
 import com.himataku.nmo.Generator.GeneratorBlock;
 import com.himataku.nmo.NewMineOrder;
@@ -159,6 +160,17 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> DISTILLATION =
+            BLOCKS.register("distillation", () ->
+                    new DistillationBlock(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
     public static final DeferredBlock<Block> DUST =
             BLOCKS.register("dust", () ->
                     new Block(
@@ -173,6 +185,9 @@ public class AllBlock {
 
     public static final DeferredBlock<Block> CRUSHER_ITEM =
             registerBlockItem("crusher", CRUSHER);
+
+    public static final DeferredBlock<Block> DISTILLATION_ITEM =
+            registerBlockItem("distillation", DISTILLATION);
 
     public static final DeferredBlock<Block> ELECTRIC_FURNACE_ITEM =
             registerBlockItem("electric_furnace", ELECTRIC_FURNACE);

@@ -4,7 +4,7 @@ import com.himataku.nmo.CrusherBlock.CrusherScreen;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceScreen;
 import com.himataku.nmo.Generator.GeneratorScreen;
 import com.himataku.nmo.customblock.AllFluid;
-
+import com.himataku.nmo.Distillation.DistillationScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +37,10 @@ public class ClientModEvents {
         event.register(
                 ModMenus.GENERATOR.get(),
                 GeneratorScreen::new
+        );
+        event.register(
+                ModMenus.DISTILLATION.get(),
+                DistillationScreen::new
         );
     }
 
@@ -82,6 +86,20 @@ public class ClientModEvents {
         event.registerFluidType(
                 createSteamTextureExtension(),
                 AllFluid.MOLTEN_TUNGSTEN_TYPE.value()
+        );
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.CRUDE_OIL_TYPE.value()
+        );
+
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.NAPHTHA_TYPE.value()
+        );
+
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.GASOLINE_TYPE.value()
         );
     }
 

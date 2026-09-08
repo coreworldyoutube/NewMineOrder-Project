@@ -209,6 +209,134 @@ public class AllFluid {
                     .block(() -> AllFluidItemBlock.MOLTEN_TUNGSTEN_BLOCK.value())
                     .bucket(() -> AllFluidItemBlock.MOLTEN_TUNGSTEN_BUCKET.value());
 
+    /*
+     * =========================================================
+     * Crude Oil
+     * =========================================================
+     */
+
+    public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE =
+            DeferredHolder.create(
+                    NeoForgeRegistries.Keys.FLUID_TYPES,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "crude_oil"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> CRUDE_OIL =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "crude_oil"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> FLOWING_CRUDE_OIL =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "flowing_crude_oil"
+                    )
+            );
+
+    private static final BaseFlowingFluid.Properties CRUDE_OIL_PROPERTIES =
+            new BaseFlowingFluid.Properties(
+                    CRUDE_OIL_TYPE,
+                    CRUDE_OIL::value,
+                    FLOWING_CRUDE_OIL::value
+            )
+                    .block(() -> AllFluidItemBlock.CRUDE_OIL_BLOCK.value())
+                    .bucket(() -> AllFluidItemBlock.CRUDE_OIL_BUCKET.value());
+
+
+    /*
+     * =========================================================
+     * Naphtha
+     * =========================================================
+     */
+
+    public static final DeferredHolder<FluidType, FluidType> NAPHTHA_TYPE =
+            DeferredHolder.create(
+                    NeoForgeRegistries.Keys.FLUID_TYPES,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "naphtha"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> NAPHTHA =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "naphtha"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> FLOWING_NAPHTHA =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "flowing_naphtha"
+                    )
+            );
+
+    private static final BaseFlowingFluid.Properties NAPHTHA_PROPERTIES =
+            new BaseFlowingFluid.Properties(
+                    NAPHTHA_TYPE,
+                    NAPHTHA::value,
+                    FLOWING_NAPHTHA::value
+            )
+                    .block(() -> AllFluidItemBlock.NAPHTHA_BLOCK.value())
+                    .bucket(() -> AllFluidItemBlock.NAPHTHA_BUCKET.value());
+
+
+    /*
+     * =========================================================
+     * Gasoline
+     * =========================================================
+     */
+
+    public static final DeferredHolder<FluidType, FluidType> GASOLINE_TYPE =
+            DeferredHolder.create(
+                    NeoForgeRegistries.Keys.FLUID_TYPES,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "gasoline"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> GASOLINE =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "gasoline"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> FLOWING_GASOLINE =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "flowing_gasoline"
+                    )
+            );
+
+    private static final BaseFlowingFluid.Properties GASOLINE_PROPERTIES =
+            new BaseFlowingFluid.Properties(
+                    GASOLINE_TYPE,
+                    GASOLINE::value,
+                    FLOWING_GASOLINE::value
+            )
+                    .block(() -> AllFluidItemBlock.GASOLINE_BLOCK.value())
+                    .bucket(() -> AllFluidItemBlock.GASOLINE_BUCKET.value());
+
 
     /*
      * =========================================================
@@ -358,6 +486,113 @@ public class AllFluid {
                 "flowing_molten_tungsten",
                 () -> new BaseFlowingFluid.Flowing(
                         MOLTEN_TUNGSTEN_PROPERTIES
+                )
+        );
+
+        /*
+         * -----------------------------------------------------
+         * Crude Oil
+         * -----------------------------------------------------
+         */
+
+        FLUID_TYPES.register(
+                "crude_oil",
+                () -> new FluidType(
+                        FluidType.Properties.create()
+                                .density(850)
+                                .temperature(300)
+                                .viscosity(500)
+                                .canPushEntity(false)
+                                .canSwim(false)
+                                .canDrown(false)
+                                .canExtinguish(false)
+                                .canConvertToSource(false)
+                )
+        );
+
+        FLUIDS.register(
+                "crude_oil",
+                () -> new BaseFlowingFluid.Source(
+                        CRUDE_OIL_PROPERTIES
+                )
+        );
+
+        FLUIDS.register(
+                "flowing_crude_oil",
+                () -> new BaseFlowingFluid.Flowing(
+                        CRUDE_OIL_PROPERTIES
+                )
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * Naphtha
+         * -----------------------------------------------------
+         */
+
+        FLUID_TYPES.register(
+                "naphtha",
+                () -> new FluidType(
+                        FluidType.Properties.create()
+                                .density(700)
+                                .temperature(300)
+                                .viscosity(200)
+                                .canPushEntity(false)
+                                .canSwim(false)
+                                .canDrown(false)
+                                .canExtinguish(false)
+                                .canConvertToSource(false)
+                )
+        );
+
+        FLUIDS.register(
+                "naphtha",
+                () -> new BaseFlowingFluid.Source(
+                        NAPHTHA_PROPERTIES
+                )
+        );
+
+        FLUIDS.register(
+                "flowing_naphtha",
+                () -> new BaseFlowingFluid.Flowing(
+                        NAPHTHA_PROPERTIES
+                )
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * Gasoline
+         * -----------------------------------------------------
+         */
+
+        FLUID_TYPES.register(
+                "gasoline",
+                () -> new FluidType(
+                        FluidType.Properties.create()
+                                .density(740)
+                                .temperature(300)
+                                .viscosity(100)
+                                .canPushEntity(false)
+                                .canSwim(false)
+                                .canDrown(false)
+                                .canExtinguish(false)
+                                .canConvertToSource(false)
+                )
+        );
+
+        FLUIDS.register(
+                "gasoline",
+                () -> new BaseFlowingFluid.Source(
+                        GASOLINE_PROPERTIES
+                )
+        );
+
+        FLUIDS.register(
+                "flowing_gasoline",
+                () -> new BaseFlowingFluid.Flowing(
+                        GASOLINE_PROPERTIES
                 )
         );
     }

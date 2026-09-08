@@ -1,6 +1,7 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherMenu;
+import com.himataku.nmo.Distillation.DistillationMenu;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceMenu;
 import com.himataku.nmo.Generator.GeneratorMenu;
 import net.minecraft.core.registries.Registries;
@@ -47,6 +48,16 @@ public class ModMenus {
                     "generator",
                     () -> IMenuTypeExtension.create(
                             GeneratorMenu::new
+                    )
+            );
+    public static final DeferredHolder<
+            MenuType<?>,
+            MenuType<DistillationMenu>
+            > DISTILLATION =
+            MENUS.register(
+                    "distillation",
+                    () -> IMenuTypeExtension.create(
+                            DistillationMenu::new
                     )
             );
 }

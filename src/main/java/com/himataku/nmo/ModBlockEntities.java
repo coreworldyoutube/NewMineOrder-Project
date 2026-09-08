@@ -1,9 +1,11 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlockEntity;
+import com.himataku.nmo.Distillation.DistillationBlockEntity;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceBlockEntity;
 import com.himataku.nmo.Generator.GeneratorBlockEntity;
 import com.himataku.nmo.customblock.AllBlock;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -17,6 +19,13 @@ public class ModBlockEntities {
                     NewMineOrder.MODID
             );
 
+
+    /*
+     * =========================================================
+     * Crusher
+     * =========================================================
+     */
+
     public static final DeferredHolder<
             BlockEntityType<?>,
             BlockEntityType<CrusherBlockEntity>
@@ -28,6 +37,13 @@ public class ModBlockEntities {
                             AllBlock.CRUSHER.get()
                     ).build(null)
             );
+
+
+    /*
+     * =========================================================
+     * Electric Furnace
+     * =========================================================
+     */
 
     public static final DeferredHolder<
             BlockEntityType<?>,
@@ -41,6 +57,13 @@ public class ModBlockEntities {
                     ).build(null)
             );
 
+
+    /*
+     * =========================================================
+     * Generator
+     * =========================================================
+     */
+
     public static final DeferredHolder<
             BlockEntityType<?>,
             BlockEntityType<GeneratorBlockEntity>
@@ -50,6 +73,25 @@ public class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             GeneratorBlockEntity::new,
                             AllBlock.GENERATOR.get()
+                    ).build(null)
+            );
+
+
+    /*
+     * =========================================================
+     * Distillation
+     * =========================================================
+     */
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<DistillationBlockEntity>
+            > DISTILLATION =
+            BLOCK_ENTITY_TYPES.register(
+                    "distillation",
+                    () -> BlockEntityType.Builder.of(
+                            DistillationBlockEntity::new,
+                            AllBlock.DISTILLATION.get()
                     ).build(null)
             );
 }

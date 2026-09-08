@@ -11,6 +11,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+
+
 @Mod(NewMineOrder.MODID)
 public class NewMineOrder {
 
@@ -94,6 +96,23 @@ public class NewMineOrder {
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 ModBlockEntities.GENERATOR.get(),
+                (blockEntity, side) ->
+                        blockEntity.getEnergyStorage()
+        );
+        // =========================
+        // Distillation
+        // =========================
+
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.DISTILLATION.get(),
+                (blockEntity, side) ->
+                        blockEntity.getFluidHandler()
+        );
+
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.DISTILLATION.get(),
                 (blockEntity, side) ->
                         blockEntity.getEnergyStorage()
         );
