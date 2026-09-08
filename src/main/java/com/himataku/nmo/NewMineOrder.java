@@ -2,14 +2,13 @@ package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.ModRecipes;
 import com.himataku.nmo.customblock.AllFluid;
+import com.himataku.nmo.customblock.AllBlock;
+import com.himataku.nmo.customblock.AllItem;
+import com.himataku.nmo.tab.NmoTab;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-
-import com.himataku.nmo.customblock.AllBlock;
-import com.himataku.nmo.customblock.AllItem;
-import com.himataku.nmo.tab.NmoTab;
 
 @Mod(NewMineOrder.MODID)
 public class NewMineOrder {
@@ -75,6 +74,24 @@ public class NewMineOrder {
                 ModBlockEntities.ELECTRIC_FURNACE.get(),
                 (blockEntity, side) ->
                         blockEntity.getExternalItemHandler()
+        );
+
+        // =========================
+        // Generator
+        // =========================
+
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.GENERATOR.get(),
+                (blockEntity, side) ->
+                        blockEntity.getFluidHandler()
+        );
+
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.GENERATOR.get(),
+                (blockEntity, side) ->
+                        blockEntity.getEnergyStorage()
         );
     }
 }

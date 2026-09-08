@@ -2,6 +2,7 @@ package com.himataku.nmo.Generator;
 
 import com.himataku.nmo.ModBlockEntities;
 import com.himataku.nmo.customblock.AllFluid;
+import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class GeneratorBlockEntity extends BlockEntity implements Container {
@@ -34,8 +36,19 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
     private int burnTime = 0;
     private int maxBurnTime = 0;
 
+    /*
+     * =========================
+     * 水タンク
+     * =========================
+     *
+     * 水だけを受け入れる
+     */
     private final FluidTank waterTank =
-            new FluidTank(WATER_CAPACITY) {
+            new FluidTank(
+                    WATER_CAPACITY,
+                    fluidStack ->
+                            fluidStack.getFluid() == net.minecraft.world.level.material.Fluids.WATER
+            ) {
 
                 @Override
                 protected void onContentsChanged() {
@@ -43,8 +56,19 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
                 }
             };
 
+    /*
+     * =========================
+     * Steamタンク
+     * =========================
+     *
+     * Steamだけを受け入れる
+     */
     private final FluidTank steamTank =
-            new FluidTank(STEAM_CAPACITY) {
+            new FluidTank(
+                    STEAM_CAPACITY,
+                    fluidStack ->
+                            fluidStack.getFluid() == AllFluid.STEAM.get()
+            ) {
 
                 @Override
                 protected void onContentsChanged() {
@@ -52,13 +76,62 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
                 }
             };
 
+    /*
+     * =========================
+     * 外部Fluid Capability
+     * =========================
+     *
+     * タンク2つを1つのFluid Handlerとして公開する。
+     *
+     * 0 = Water
+     * 1 = Steam
+     */
+    private final CombinedTankWrapper fluidHandler =
+            new CombinedTankWrapper(
+                    waterTank,
+                    steamTank
+            );
+
+    /*
+     * =========================
+     * Energy
+     * =========================
+     */
     private final EnergyStorage energyStorage =
             new EnergyStorage(
                     ENERGY_CAPACITY,
                     10_000,
                     10_000
-            );
+            ) {
 
+                @Override
+                public int receiveEnergy(
+                        int toReceive,
+                        boolean simulate
+                ) {
+                    return super.receiveEnergy(
+                            toReceive,
+                            simulate
+                    );
+                }
+
+                @Override
+                public int extractEnergy(
+                        int toExtract,
+                        boolean simulate
+                ) {
+                    return super.extractEnergy(
+                            toExtract,
+                            simulate
+                    );
+                }
+            };
+
+    /*
+     * =========================
+     * ContainerData
+     * =========================
+     */
     private final ContainerData containerData =
             new ContainerData() {
 
@@ -75,7 +148,10 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
                 }
 
                 @Override
-                public void set(int index, int value) {
+                public void set(
+                        int index,
+                        int value
+                ) {
                     switch (index) {
                         case 0 -> burnTime = value;
                         case 1 -> maxBurnTime = value;
@@ -101,6 +177,11 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
         );
     }
 
+    /*
+     * =========================
+     * Tick
+     * =========================
+     */
     public static void tick(
             Level level,
             BlockPos pos,
@@ -127,7 +208,8 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
         if (burnTime > 0) {
 
             /*
-             * 水があり、Steamタンクに空きがある場合、
+             * 水があり、
+             * Steamタンクに空きがある場合、
              * 水をSteamに変換する。
              */
             if (waterTank.getFluidAmount() >= WATER_PER_TICK
@@ -368,6 +450,10 @@ public class GeneratorBlockEntity extends BlockEntity implements Container {
 
     public FluidTank getSteamTank() {
         return steamTank;
+    }
+
+    public IFluidHandler getFluidHandler() {
+        return fluidHandler;
     }
 
     public EnergyStorage getEnergyStorage() {

@@ -2,6 +2,7 @@ package com.himataku.nmo.customblock;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlock;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnace;
+import com.himataku.nmo.Generator.GeneratorBlock;
 import com.himataku.nmo.NewMineOrder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -149,7 +150,7 @@ public class AllBlock {
 
     public static final DeferredBlock<Block> GENERATOR =
             BLOCKS.register("generator", () ->
-                    new ElectricFurnace(
+                    new GeneratorBlock(
                             BlockBehaviour.Properties.of()
                                     .destroyTime(3.0f)
                                     .explosionResistance(10.0f)
