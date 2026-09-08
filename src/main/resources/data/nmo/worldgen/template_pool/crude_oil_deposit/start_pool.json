@@ -1,4 +1,5 @@
 {
+  "name": "nmo:crude_oil_deposit/start_pool",
   "fallback": "minecraft:empty",
   "elements": [
     {
