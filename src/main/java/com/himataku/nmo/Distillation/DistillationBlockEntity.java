@@ -124,6 +124,88 @@ public class DistillationBlockEntity
 
     /*
      * ============================================================
+     * Active Tank Count
+     * ============================================================
+     *
+     * 外部に公開するタンク数。
+     *
+     * 例：
+     *
+     * 2出力レシピ
+     * 0 = Input
+     * 1 = Output 1
+     * 2 = Output 2
+     *
+     * つまり getTanks() = 3
+     *
+     * さらに、入力が空になった後でも
+     * 出力液体が残っていれば、そのタンクを公開する。
+     *
+     * ============================================================
+     */
+
+    private int getActiveTankCount() {
+
+        int outputCount = 0;
+
+        /*
+         * 現在のレシピが要求している出力数
+         */
+
+        DistillationRecipe recipe =
+                getCurrentRecipe();
+
+        if (recipe != null) {
+
+            outputCount =
+                    recipe.getFluidOutputs().size();
+        }
+
+        /*
+         * 現在保存されている出力液体も確認する。
+         *
+         * 入力タンクが空になった後でも、
+         * 既に作られた液体を外部から取り出せるようにする。
+         */
+
+        for (
+                int i = OUTPUT_TANK_1;
+                i < TANK_COUNT;
+                i++
+        ) {
+
+            if (!tanks[i].getFluid().isEmpty()) {
+
+                int count =
+                        i - OUTPUT_TANK_1 + 1;
+
+                outputCount =
+                        Math.max(
+                                outputCount,
+                                count
+                        );
+            }
+        }
+
+        /*
+         * Input 1個 + Outputの数
+         */
+
+        int result =
+                1 + outputCount;
+
+        /*
+         * 念のため最大10タンクまで。
+         */
+
+        return Math.min(
+                result,
+                TANK_COUNT
+        );
+    }
+
+    /*
+     * ============================================================
      * Fluid Handler
      * ============================================================
      */
@@ -131,18 +213,33 @@ public class DistillationBlockEntity
     private final IFluidHandler fluidHandler =
             new IFluidHandler() {
 
+                /*
+                 * ------------------------------------------------
+                 * Tank Count
+                 * ------------------------------------------------
+                 */
+
                 @Override
                 public int getTanks() {
-                    return TANK_COUNT;
+
+                    return getActiveTankCount();
                 }
+
+                /*
+                 * ------------------------------------------------
+                 * Fluid In Tank
+                 * ------------------------------------------------
+                 */
 
                 @Override
                 public FluidStack getFluidInTank(
                         int tank
                 ) {
 
-                    if (tank < 0
-                            || tank >= TANK_COUNT) {
+                    if (
+                            tank < 0
+                                    || tank >= getActiveTankCount()
+                    ) {
 
                         return FluidStack.EMPTY;
                     }
@@ -152,13 +249,21 @@ public class DistillationBlockEntity
                             .copy();
                 }
 
+                /*
+                 * ------------------------------------------------
+                 * Tank Capacity
+                 * ------------------------------------------------
+                 */
+
                 @Override
                 public int getTankCapacity(
                         int tank
                 ) {
 
-                    if (tank < 0
-                            || tank >= TANK_COUNT) {
+                    if (
+                            tank < 0
+                                    || tank >= getActiveTankCount()
+                    ) {
 
                         return 0;
                     }
@@ -166,6 +271,16 @@ public class DistillationBlockEntity
                     return tanks[tank]
                             .getCapacity();
                 }
+
+                /*
+                 * ------------------------------------------------
+                 * Valid Fluid
+                 * ------------------------------------------------
+                 *
+                 * 外部から液体を入れられるのはInputだけ。
+                 *
+                 * ------------------------------------------------
+                 */
 
                 @Override
                 public boolean isFluidValid(
@@ -175,6 +290,16 @@ public class DistillationBlockEntity
 
                     return tank == INPUT_TANK;
                 }
+
+                /*
+                 * ------------------------------------------------
+                 * Fill
+                 * ------------------------------------------------
+                 *
+                 * 外部から入れる液体は必ずInputへ。
+                 *
+                 * ------------------------------------------------
+                 */
 
                 @Override
                 public int fill(
@@ -193,6 +318,16 @@ public class DistillationBlockEntity
                             );
                 }
 
+                /*
+                 * ------------------------------------------------
+                 * Drain Specific Fluid
+                 * ------------------------------------------------
+                 *
+                 * 現在公開されている出力タンクだけを見る。
+                 *
+                 * ------------------------------------------------
+                 */
+
                 @Override
                 public FluidStack drain(
                         FluidStack resource,
@@ -203,9 +338,12 @@ public class DistillationBlockEntity
                         return FluidStack.EMPTY;
                     }
 
+                    int activeTanks =
+                            getActiveTankCount();
+
                     for (
                             int i = OUTPUT_TANK_1;
-                            i < TANK_COUNT;
+                            i < activeTanks;
                             i++
                     ) {
 
@@ -216,12 +354,24 @@ public class DistillationBlockEntity
                                 );
 
                         if (!result.isEmpty()) {
+
                             return result;
                         }
                     }
 
                     return FluidStack.EMPTY;
                 }
+
+                /*
+                 * ------------------------------------------------
+                 * Drain Any Fluid
+                 * ------------------------------------------------
+                 *
+                 * 出力1 → 出力2 → 出力3...
+                 * の順番で取り出す。
+                 *
+                 * ------------------------------------------------
+                 */
 
                 @Override
                 public FluidStack drain(
@@ -233,9 +383,12 @@ public class DistillationBlockEntity
                         return FluidStack.EMPTY;
                     }
 
+                    int activeTanks =
+                            getActiveTankCount();
+
                     for (
                             int i = OUTPUT_TANK_1;
-                            i < TANK_COUNT;
+                            i < activeTanks;
                             i++
                     ) {
 
@@ -246,6 +399,7 @@ public class DistillationBlockEntity
                                 );
 
                         if (!result.isEmpty()) {
+
                             return result;
                         }
                     }
@@ -284,6 +438,7 @@ public class DistillationBlockEntity
 
                         @Override
                         protected void onContentsChanged() {
+
                             setChanged();
                         }
 
@@ -330,16 +485,20 @@ public class DistillationBlockEntity
             return;
         }
 
-        if (blockEntity.energy.getEnergyStored()
-                < recipe.getEnergy()) {
+        if (
+                blockEntity.energy.getEnergyStored()
+                        < recipe.getEnergy()
+        ) {
 
             return;
         }
 
         blockEntity.progress++;
 
-        if (blockEntity.progress
-                >= recipe.getProcessingTime()) {
+        if (
+                blockEntity.progress
+                        >= recipe.getProcessingTime()
+        ) {
 
             if (blockEntity.processRecipe(recipe)) {
 
@@ -370,48 +529,35 @@ public class DistillationBlockEntity
 
         if (input.isEmpty()) {
 
-            System.out.println(
-                    "[NMO] Distillation: input is empty"
-            );
-
             return null;
         }
-
-        System.out.println(
-                "[NMO] Distillation input: "
-                        + input.getFluid()
-                        + " amount="
-                        + input.getAmount()
-        );
 
         DistillationRecipe.DistillationRecipeInput recipeInput =
                 new DistillationRecipe.DistillationRecipeInput(
                         input.copy()
                 );
 
-        var result =
+        var recipes =
                 level.getRecipeManager()
-                        .getRecipeFor(
-                                ModRecipes.DISTILLATION_TYPE.get(),
-                                recipeInput,
-                                level
+                        .getAllRecipesFor(
+                                ModRecipes.DISTILLATION_TYPE.get()
                         );
 
-        if (result.isPresent()) {
+        for (var holder : recipes) {
 
             DistillationRecipe recipe =
-                    result.get().value();
+                    holder.value();
 
-            System.out.println(
-                    "[NMO] Distillation recipe FOUND"
-            );
+            if (
+                    recipe.matches(
+                            recipeInput,
+                            level
+                    )
+            ) {
 
-            return recipe;
+                return recipe;
+            }
         }
-
-        System.out.println(
-                "[NMO] Distillation recipe NOT FOUND"
-        );
 
         return null;
     }
@@ -430,16 +576,40 @@ public class DistillationBlockEntity
                 tanks[INPUT_TANK]
                         .getFluid();
 
+        /*
+         * --------------------------------------------------------
+         * Input Check
+         * --------------------------------------------------------
+         */
+
         if (!recipe.getInput().test(input)) {
+
             return false;
         }
 
         /*
-         * Check all fluid outputs first.
+         * --------------------------------------------------------
+         * Fluid Outputs
+         * --------------------------------------------------------
          */
 
         var outputs =
                 recipe.getFluidOutputs();
+
+        /*
+         * 最大9出力
+         */
+
+        if (outputs.size() > TANK_COUNT - 1) {
+
+            return false;
+        }
+
+        /*
+         * --------------------------------------------------------
+         * Check all fluid outputs first.
+         * --------------------------------------------------------
+         */
 
         for (
                 int i = 0;
@@ -453,51 +623,87 @@ public class DistillationBlockEntity
             int outputTank =
                     OUTPUT_TANK_1 + i;
 
-            if (outputTank >= TANK_COUNT) {
-                return false;
-            }
-
-            if (!canInsertFluid(
-                    outputTank,
-                    output
-            )) {
+            if (
+                    !canInsertFluid(
+                            outputTank,
+                            output
+                    )
+            ) {
 
                 return false;
             }
         }
 
         /*
-         * Check item output.
+         * --------------------------------------------------------
+         * Item Output Check
+         * --------------------------------------------------------
          */
 
         ItemStack itemOutput =
                 recipe.getItemOutput();
 
         if (!canInsertItem(itemOutput)) {
+
             return false;
         }
 
         /*
-         * Check energy.
+         * --------------------------------------------------------
+         * Energy Check
+         * --------------------------------------------------------
          */
 
-        if (energy.getEnergyStored()
-                < recipe.getEnergy()) {
+        int storedEnergy =
+                energy.getEnergyStored();
+
+        int requiredEnergy =
+                recipe.getEnergy();
+
+        if (storedEnergy < requiredEnergy) {
 
             return false;
         }
 
         /*
+         * --------------------------------------------------------
          * Everything is ready.
+         * --------------------------------------------------------
          */
 
-        tanks[INPUT_TANK].drain(
-                recipe.getInput().amount(),
-                IFluidHandler.FluidAction.EXECUTE
-        );
+        int inputAmount =
+                recipe.getInput().amount();
 
         /*
-         * Insert fluids.
+         * --------------------------------------------------------
+         * Drain Input
+         * --------------------------------------------------------
+         */
+
+        FluidStack drained =
+                tanks[INPUT_TANK].drain(
+                        inputAmount,
+                        IFluidHandler.FluidAction.EXECUTE
+                );
+
+        if (drained.isEmpty()) {
+
+            return false;
+        }
+
+        /*
+         * --------------------------------------------------------
+         * Insert Fluid Outputs
+         * --------------------------------------------------------
+         *
+         * JSONの配列順にタンクへ入れる。
+         *
+         * fluid_outputs[0] → Tank 1
+         * fluid_outputs[1] → Tank 2
+         * fluid_outputs[2] → Tank 3
+         * ...
+         *
+         * --------------------------------------------------------
          */
 
         for (
@@ -509,24 +715,34 @@ public class DistillationBlockEntity
             FluidStack output =
                     outputs.get(i);
 
-            tanks[OUTPUT_TANK_1 + i].fill(
+            int tank =
+                    OUTPUT_TANK_1 + i;
+
+            tanks[tank].fill(
                     output,
                     IFluidHandler.FluidAction.EXECUTE
             );
         }
 
         /*
-         * Insert item.
+         * --------------------------------------------------------
+         * Insert Item
+         * --------------------------------------------------------
          */
 
-        insertItem(itemOutput);
+        if (!itemOutput.isEmpty()) {
+
+            insertItem(itemOutput);
+        }
 
         /*
-         * Consume energy.
+         * --------------------------------------------------------
+         * Consume Energy
+         * --------------------------------------------------------
          */
 
         energy.extractEnergy(
-                recipe.getEnergy(),
+                requiredEnergy,
                 false
         );
 
@@ -546,19 +762,26 @@ public class DistillationBlockEntity
             FluidStack stack
     ) {
 
-        if (tank < OUTPUT_TANK_1
-                || tank >= TANK_COUNT) {
+        if (
+                tank < OUTPUT_TANK_1
+                        || tank >= TANK_COUNT
+        ) {
 
             return false;
         }
 
         if (stack.isEmpty()) {
+
             return true;
         }
 
         FluidStack current =
                 tanks[tank]
                         .getFluid();
+
+        /*
+         * 空ならそのまま入る。
+         */
 
         if (current.isEmpty()) {
 
@@ -567,13 +790,23 @@ public class DistillationBlockEntity
                     .getCapacity();
         }
 
-        if (!FluidStack.isSameFluidSameComponents(
-                current,
-                stack
-        )) {
+        /*
+         * 同じ液体でなければ混ざらない。
+         */
+
+        if (
+                !FluidStack.isSameFluidSameComponents(
+                        current,
+                        stack
+                )
+        ) {
 
             return false;
         }
+
+        /*
+         * 容量チェック。
+         */
 
         return current.getAmount()
                 + stack.getAmount()
@@ -591,6 +824,7 @@ public class DistillationBlockEntity
     ) {
 
         if (stack.isEmpty()) {
+
             return true;
         }
 
@@ -600,13 +834,16 @@ public class DistillationBlockEntity
                 );
 
         if (current.isEmpty()) {
+
             return true;
         }
 
-        if (!ItemStack.isSameItemSameComponents(
-                current,
-                stack
-        )) {
+        if (
+                !ItemStack.isSameItemSameComponents(
+                        current,
+                        stack
+                )
+        ) {
 
             return false;
         }
@@ -627,6 +864,7 @@ public class DistillationBlockEntity
     ) {
 
         if (stack.isEmpty()) {
+
             return;
         }
 
@@ -644,14 +882,17 @@ public class DistillationBlockEntity
      */
 
     public ItemStackHandler getItems() {
+
         return items;
     }
 
     public EnergyStorage getEnergy() {
+
         return energy;
     }
 
     public IFluidHandler getFluidHandler() {
+
         return fluidHandler;
     }
 
@@ -679,6 +920,7 @@ public class DistillationBlockEntity
     }
 
     public int getProgress() {
+
         return progress;
     }
 
@@ -688,6 +930,7 @@ public class DistillationBlockEntity
                 getCurrentRecipe();
 
         if (recipe == null) {
+
             return 1;
         }
 
@@ -695,10 +938,12 @@ public class DistillationBlockEntity
     }
 
     public int getEnergyStored() {
+
         return energy.getEnergyStored();
     }
 
     public int getEnergyCapacity() {
+
         return ENERGY_CAPACITY;
     }
 

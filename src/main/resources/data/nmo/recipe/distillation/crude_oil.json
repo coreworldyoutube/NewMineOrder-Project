@@ -14,14 +14,13 @@
     {
       "id": "nmo:gasoline",
       "amount": 300
+    },
+    {
+      "id": "nmo:steam",
+      "amount": 300
     }
   ],
 
-  "item_output": {
-    "id": "minecraft:coal",
-    "count": 1
-  },
-
-  "processing_time": 200,
-  "energy": 1000
+  "processing_time": 20,
+  "energy": 10
 }

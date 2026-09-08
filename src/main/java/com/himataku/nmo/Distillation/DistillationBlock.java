@@ -21,8 +21,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import net.neoforged.neoforge.network.IContainerFactory;
-
 import org.jetbrains.annotations.Nullable;
 
 public class DistillationBlock extends BaseEntityBlock {
@@ -65,7 +63,6 @@ public class DistillationBlock extends BaseEntityBlock {
             BlockState state,
             BlockEntityType<T> type
     ) {
-
         if (level.isClientSide()) {
             return null;
         }
@@ -85,7 +82,6 @@ public class DistillationBlock extends BaseEntityBlock {
             Player player,
             BlockHitResult hit
     ) {
-
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
@@ -115,7 +111,6 @@ public class DistillationBlock extends BaseEntityBlock {
                             Inventory inventory,
                             Player player
                     ) {
-
                         return new DistillationMenu(
                                 containerId,
                                 inventory,

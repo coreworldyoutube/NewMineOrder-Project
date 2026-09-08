@@ -256,10 +256,12 @@ public class DistillationRecipe
             DistillationRecipeInput input,
             Level level
     ) {
-
-        return this.input.test(
+        boolean matched = this.input.test(
                 input.fluid()
         );
+
+
+        return matched;
     }
 
     @Override
