@@ -1,0 +1,13 @@
+{
+  "type": "nmo:crusher",
+  "ingredient": {
+    "item": "minecraft:obsidian"
+  },
+  "results": [
+    {
+      "id": "nmo:obsidian_dust",
+      "count": 1,
+      "chance": 1.0
+    }
+  ]
+}

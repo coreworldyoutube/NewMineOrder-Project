@@ -1,0 +1,13 @@
+{
+  "type": "nmo:crusher",
+  "ingredient": {
+    "item": "minecraft:end_stone"
+  },
+  "results": [
+    {
+      "id": "nmo:crushed_endstone",
+      "count": 1,
+      "chance": 1.0
+    }
+  ]
+}

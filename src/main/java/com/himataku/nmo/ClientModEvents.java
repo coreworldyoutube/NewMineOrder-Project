@@ -45,37 +45,81 @@ public class ClientModEvents {
             RegisterClientExtensionsEvent event
     ) {
 
+        /*
+         * Steam
+         */
+
         event.registerFluidType(
-                new IClientFluidTypeExtensions() {
-
-                    private static final ResourceLocation STILL =
-                            ResourceLocation.fromNamespaceAndPath(
-                                    NewMineOrder.MODID,
-                                    "block/steam"
-                            );
-
-                    private static final ResourceLocation FLOWING =
-                            ResourceLocation.fromNamespaceAndPath(
-                                    NewMineOrder.MODID,
-                                    "block/steam_flow"
-                            );
-
-                    @Override
-                    public ResourceLocation getStillTexture() {
-                        return STILL;
-                    }
-
-                    @Override
-                    public ResourceLocation getFlowingTexture() {
-                        return FLOWING;
-                    }
-
-                    @Override
-                    public int getTintColor() {
-                        return 0xFFFFFFFF;
-                    }
-                },
+                createSteamTextureExtension(),
                 AllFluid.STEAM_TYPE.value()
         );
+
+
+        /*
+         * Hydrogen
+         */
+
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.HYDROGEN_TYPE.value()
+        );
+
+
+        /*
+         * Oxygen
+         */
+
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.OXYGEN_TYPE.value()
+        );
+
+
+        /*
+         * Molten Tungsten
+         */
+
+        event.registerFluidType(
+                createSteamTextureExtension(),
+                AllFluid.MOLTEN_TUNGSTEN_TYPE.value()
+        );
+    }
+
+
+    /*
+     * Steamのテクスチャを共通使用
+     */
+
+    private static IClientFluidTypeExtensions createSteamTextureExtension() {
+
+        return new IClientFluidTypeExtensions() {
+
+            private static final ResourceLocation STILL =
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "block/steam"
+                    );
+
+            private static final ResourceLocation FLOWING =
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "block/steam_flow"
+                    );
+
+            @Override
+            public ResourceLocation getStillTexture() {
+                return STILL;
+            }
+
+            @Override
+            public ResourceLocation getFlowingTexture() {
+                return FLOWING;
+            }
+
+            @Override
+            public int getTintColor() {
+                return 0xFFFFFFFF;
+            }
+        };
     }
 }

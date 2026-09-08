@@ -1,0 +1,13 @@
+{
+  "type": "nmo:crusher",
+  "ingredient": {
+    "item": "minecraft:sand"
+  },
+  "results": [
+    {
+      "id": "nmo:dust",
+      "count": 2,
+      "chance": 1.0
+    }
+  ]
+}

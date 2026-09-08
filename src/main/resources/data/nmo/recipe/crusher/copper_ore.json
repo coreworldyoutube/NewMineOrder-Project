@@ -1,0 +1,53 @@
+{
+  "type": "nmo:crusher",
+  "ingredient": {
+    "item": "minecraft:copper_ore"
+  },
+  "results": [
+    {
+      "id": "minecraft:raw_copper",
+      "count": 10,
+      "chance": 1.0
+    },
+    {
+      "id": "minecraft:gravel",
+      "count": 1,
+      "chance": 0.25
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "minecraft:raw_copper",
+      "count": 1,
+      "chance": 0.75
+    }
+  ]
+}

@@ -159,6 +159,16 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> DUST =
+            BLOCKS.register("dust", () ->
+                    new Block(
+                            BlockBehaviour.Properties.of()
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.SAND)
+                                    .speedFactor(0.75f)
+                    )
+            );
+
 
 
     public static final DeferredBlock<Block> CRUSHER_ITEM =
@@ -196,6 +206,9 @@ public class AllBlock {
 
     public static final DeferredBlock<Block> MONAZITE_SAND_ITEM =
             registerBlockItem("monazite_sand", MONAZITE_SAND);
+
+    public static final DeferredBlock<Block> DUST_ITEM =
+            registerBlockItem("dust", DUST);
 
 
     private static DeferredBlock<Block> registerBlockItem(

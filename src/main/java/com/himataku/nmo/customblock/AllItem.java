@@ -125,5 +125,63 @@ public class AllItem {
 
                     )
             );
+
+    public static final DeferredItem<Item> CRUSHED_RAW_IRON =
+            ITEMS.register("crushed_raw_iron", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> CRUSHED_RAW_COPPER =
+            ITEMS.register("crushed_raw_copper", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> CRUSHED_RAW_GOLD =
+            ITEMS.register("crushed_raw_gold", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> CRUSHED_RAW_BERYLLIUM =
+            ITEMS.register("crushed_raw_beryllium", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> CRUSHED_RAW_TITAN =
+            ITEMS.register("crushed_raw_titan", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> CRUSHED_RAW_TUNGSTEN =
+            ITEMS.register("crushed_raw_tungsten", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+
+    public static final DeferredItem<Item> CRUSHED_ENDSTONE =
+            ITEMS.register("crushed_endstone", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> OBSIDIAN_DUST =
+            ITEMS.register("obsidian_dust", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
     
 }

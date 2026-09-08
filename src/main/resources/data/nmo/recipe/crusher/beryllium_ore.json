@@ -1,12 +1,12 @@
 {
   "type": "nmo:crusher",
   "ingredient": {
-    "item": "minecraft:iron_ore"
+    "item": "nmo:beryllium_ore"
   },
   "results": [
     {
-      "id": "minecraft:raw_iron",
-      "count": 1,
+      "id": "nmo:raw_beryllium",
+      "count": 2,
       "chance": 1.0
     },
     {
@@ -15,9 +15,9 @@
       "chance": 0.25
     },
     {
-      "id": "minecraft:raw_iron",
+      "id": "nmo:raw_beryllium",
       "count": 1,
-      "chance": 0.10
+      "chance": 0.13
     }
   ]
 }

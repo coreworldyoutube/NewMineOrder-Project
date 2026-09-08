@@ -1,0 +1,13 @@
+{
+  "type": "nmo:crusher",
+  "ingredient": {
+    "item": "minecraft:granite"
+  },
+  "results": [
+    {
+      "id": "minecraft:red_sand",
+      "count": 1,
+      "chance": 1.0
+    }
+  ]
+}

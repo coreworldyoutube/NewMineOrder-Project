@@ -3,6 +3,7 @@ package com.himataku.nmo;
 import com.himataku.nmo.CrusherBlock.ModRecipes;
 import com.himataku.nmo.customblock.AllFluid;
 import com.himataku.nmo.customblock.AllBlock;
+import com.himataku.nmo.customblock.AllFluidItemBlock;
 import com.himataku.nmo.customblock.AllItem;
 import com.himataku.nmo.tab.NmoTab;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +25,9 @@ public class NewMineOrder {
 
         AllFluid.FLUID_TYPES.register(bus);
         AllFluid.FLUIDS.register(bus);
+
+        AllFluidItemBlock.BLOCKS.register(bus);
+        AllFluidItemBlock.ITEMS.register(bus);
 
         NmoTab.TABS.register(bus);
 
