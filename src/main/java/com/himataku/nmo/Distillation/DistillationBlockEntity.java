@@ -152,6 +152,7 @@ public class DistillationBlockEntity
                             .copy();
                 }
 
+                @Override
                 public int getTankCapacity(
                         int tank
                 ) {
@@ -341,6 +342,12 @@ public class DistillationBlockEntity
                 >= recipe.getProcessingTime()) {
 
             if (blockEntity.processRecipe(recipe)) {
+
+                blockEntity.progress = 0;
+
+                blockEntity.setChanged();
+
+            } else {
 
                 blockEntity.progress = 0;
 
@@ -570,8 +577,7 @@ public class DistillationBlockEntity
 
         return current.getAmount()
                 + stack.getAmount()
-                <= tanks[tank]
-                .getCapacity();
+                <= tanks[tank].getCapacity();
     }
 
     /*
