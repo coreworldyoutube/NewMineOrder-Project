@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "nmo:crude_oil_deposit",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 184729361,
+    "spacing": 4,
+    "separation": 2
+  }
+}
