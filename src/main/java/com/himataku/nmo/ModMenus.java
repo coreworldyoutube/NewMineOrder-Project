@@ -1,8 +1,8 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherMenu;
-
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceMenu;
+import com.himataku.nmo.Generator.GeneratorMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -36,6 +36,17 @@ public class ModMenus {
                     "electric_furnace",
                     () -> IMenuTypeExtension.create(
                             ElectricFurnaceMenu::new
+                    )
+            );
+
+    public static final DeferredHolder<
+            MenuType<?>,
+            MenuType<GeneratorMenu>
+            > GENERATOR =
+            MENUS.register(
+                    "generator",
+                    () -> IMenuTypeExtension.create(
+                            GeneratorMenu::new
                     )
             );
 }

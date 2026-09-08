@@ -147,6 +147,17 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> GENERATOR =
+            BLOCKS.register("generator", () ->
+                    new ElectricFurnace(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
 
 
     public static final DeferredBlock<Block> CRUSHER_ITEM =
@@ -154,6 +165,9 @@ public class AllBlock {
 
     public static final DeferredBlock<Block> ELECTRIC_FURNACE_ITEM =
             registerBlockItem("electric_furnace", ELECTRIC_FURNACE);
+
+    public static final DeferredBlock<Block> GENERATOR_ITEM =
+            registerBlockItem("generator", GENERATOR);
 
     public static final DeferredBlock<Block> BERYLLIUM_BLOCK_ITEM =
             registerBlockItem("beryllium_block", BERYLLIUM_BLOCK);
