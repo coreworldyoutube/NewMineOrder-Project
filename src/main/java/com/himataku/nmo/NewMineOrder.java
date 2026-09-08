@@ -36,6 +36,7 @@ public class NewMineOrder {
         ModBlockEntities.BLOCK_ENTITY_TYPES.register(bus);
         ModMenus.MENUS.register(bus);
         ModRecipes.SERIALIZERS.register(bus);
+        ModRecipes.RECIPE_TYPES.register(bus);
 
         bus.addListener(
                 NewMineOrder::registerCapabilities

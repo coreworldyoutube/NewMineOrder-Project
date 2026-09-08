@@ -1,5 +1,6 @@
 package com.himataku.nmo.Distillation;
 
+import com.himataku.nmo.CrusherBlock.ModRecipes;
 import com.himataku.nmo.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
@@ -139,7 +140,10 @@ public class DistillationBlockEntity
                 public FluidStack getFluidInTank(
                         int tank
                 ) {
-                    if (tank < 0 || tank >= TANK_COUNT) {
+
+                    if (tank < 0
+                            || tank >= TANK_COUNT) {
+
                         return FluidStack.EMPTY;
                     }
 
@@ -148,14 +152,13 @@ public class DistillationBlockEntity
                             .copy();
                 }
 
-                /*
-                 * getTankCapacity はこの環境では
-                 * @Override を付けない。
-                 */
                 public int getTankCapacity(
                         int tank
                 ) {
-                    if (tank < 0 || tank >= TANK_COUNT) {
+
+                    if (tank < 0
+                            || tank >= TANK_COUNT) {
+
                         return 0;
                     }
 
@@ -168,6 +171,7 @@ public class DistillationBlockEntity
                         int tank,
                         FluidStack stack
                 ) {
+
                     return tank == INPUT_TANK;
                 }
 
@@ -176,6 +180,7 @@ public class DistillationBlockEntity
                         FluidStack resource,
                         FluidAction action
                 ) {
+
                     if (resource.isEmpty()) {
                         return 0;
                     }
@@ -192,13 +197,16 @@ public class DistillationBlockEntity
                         FluidStack resource,
                         FluidAction action
                 ) {
+
                     if (resource.isEmpty()) {
                         return FluidStack.EMPTY;
                     }
 
-                    for (int i = OUTPUT_TANK_1;
-                         i < TANK_COUNT;
-                         i++) {
+                    for (
+                            int i = OUTPUT_TANK_1;
+                            i < TANK_COUNT;
+                            i++
+                    ) {
 
                         FluidStack result =
                                 tanks[i].drain(
@@ -219,13 +227,16 @@ public class DistillationBlockEntity
                         int maxDrain,
                         FluidAction action
                 ) {
+
                     if (maxDrain <= 0) {
                         return FluidStack.EMPTY;
                     }
 
-                    for (int i = OUTPUT_TANK_1;
-                         i < TANK_COUNT;
-                         i++) {
+                    for (
+                            int i = OUTPUT_TANK_1;
+                            i < TANK_COUNT;
+                            i++
+                    ) {
 
                         FluidStack result =
                                 tanks[i].drain(
@@ -252,15 +263,18 @@ public class DistillationBlockEntity
             BlockPos pos,
             BlockState state
     ) {
+
         super(
                 ModBlockEntities.DISTILLATION.get(),
                 pos,
                 state
         );
 
-        for (int i = 0; i < TANK_COUNT; i++) {
-
-            int tankIndex = i;
+        for (
+                int i = 0;
+                i < TANK_COUNT;
+                i++
+        ) {
 
             tanks[i] =
                     new FluidTank(
@@ -276,6 +290,7 @@ public class DistillationBlockEntity
                         public boolean isFluidValid(
                                 FluidStack stack
                         ) {
+
                             return true;
                         }
                     };
@@ -305,7 +320,9 @@ public class DistillationBlockEntity
         if (recipe == null) {
 
             if (blockEntity.progress != 0) {
+
                 blockEntity.progress = 0;
+
                 blockEntity.setChanged();
             }
 
@@ -314,6 +331,7 @@ public class DistillationBlockEntity
 
         if (blockEntity.energy.getEnergyStored()
                 < recipe.getEnergy()) {
+
             return;
         }
 
@@ -325,6 +343,7 @@ public class DistillationBlockEntity
             if (blockEntity.processRecipe(recipe)) {
 
                 blockEntity.progress = 0;
+
                 blockEntity.setChanged();
             }
         }
@@ -337,10 +356,17 @@ public class DistillationBlockEntity
      */
 
     private DistillationRecipe getCurrentRecipe() {
-        FluidStack input = tanks[INPUT_TANK].getFluid();
+
+        FluidStack input =
+                tanks[INPUT_TANK]
+                        .getFluid();
 
         if (input.isEmpty()) {
-            System.out.println("[NMO] Distillation: input is empty");
+
+            System.out.println(
+                    "[NMO] Distillation: input is empty"
+            );
+
             return null;
         }
 
@@ -352,18 +378,22 @@ public class DistillationBlockEntity
         );
 
         DistillationRecipe.DistillationRecipeInput recipeInput =
-                new DistillationRecipe.DistillationRecipeInput(input.copy());
-
-        var result = level
-                .getRecipeManager()
-                .getRecipeFor(
-                        DistillationRecipe.TYPE,
-                        recipeInput,
-                        level
+                new DistillationRecipe.DistillationRecipeInput(
+                        input.copy()
                 );
 
+        var result =
+                level.getRecipeManager()
+                        .getRecipeFor(
+                                ModRecipes.DISTILLATION_TYPE.get(),
+                                recipeInput,
+                                level
+                        );
+
         if (result.isPresent()) {
-            DistillationRecipe recipe = result.get().value();
+
+            DistillationRecipe recipe =
+                    result.get().value();
 
             System.out.println(
                     "[NMO] Distillation recipe FOUND"
@@ -378,6 +408,7 @@ public class DistillationBlockEntity
 
         return null;
     }
+
     /*
      * ============================================================
      * Process
@@ -389,7 +420,8 @@ public class DistillationBlockEntity
     ) {
 
         FluidStack input =
-                tanks[INPUT_TANK].getFluid();
+                tanks[INPUT_TANK]
+                        .getFluid();
 
         if (!recipe.getInput().test(input)) {
             return false;
@@ -402,7 +434,11 @@ public class DistillationBlockEntity
         var outputs =
                 recipe.getFluidOutputs();
 
-        for (int i = 0; i < outputs.size(); i++) {
+        for (
+                int i = 0;
+                i < outputs.size();
+                i++
+        ) {
 
             FluidStack output =
                     outputs.get(i);
@@ -418,6 +454,7 @@ public class DistillationBlockEntity
                     outputTank,
                     output
             )) {
+
                 return false;
             }
         }
@@ -439,6 +476,7 @@ public class DistillationBlockEntity
 
         if (energy.getEnergyStored()
                 < recipe.getEnergy()) {
+
             return false;
         }
 
@@ -455,7 +493,11 @@ public class DistillationBlockEntity
          * Insert fluids.
          */
 
-        for (int i = 0; i < outputs.size(); i++) {
+        for (
+                int i = 0;
+                i < outputs.size();
+                i++
+        ) {
 
             FluidStack output =
                     outputs.get(i);
@@ -499,6 +541,7 @@ public class DistillationBlockEntity
 
         if (tank < OUTPUT_TANK_1
                 || tank >= TANK_COUNT) {
+
             return false;
         }
 
@@ -507,23 +550,28 @@ public class DistillationBlockEntity
         }
 
         FluidStack current =
-                tanks[tank].getFluid();
+                tanks[tank]
+                        .getFluid();
 
         if (current.isEmpty()) {
+
             return stack.getAmount()
-                    <= tanks[tank].getCapacity();
+                    <= tanks[tank]
+                    .getCapacity();
         }
 
         if (!FluidStack.isSameFluidSameComponents(
                 current,
                 stack
         )) {
+
             return false;
         }
 
         return current.getAmount()
                 + stack.getAmount()
-                <= tanks[tank].getCapacity();
+                <= tanks[tank]
+                .getCapacity();
     }
 
     /*
@@ -553,6 +601,7 @@ public class DistillationBlockEntity
                 current,
                 stack
         )) {
+
             return false;
         }
 
@@ -603,12 +652,14 @@ public class DistillationBlockEntity
     public FluidTank getTank(
             int index
     ) {
+
         return tanks[index];
     }
 
     public int getFluidAmount(
             int tank
     ) {
+
         return tanks[tank]
                 .getFluidAmount();
     }
@@ -616,6 +667,7 @@ public class DistillationBlockEntity
     public int getFluidCapacity(
             int tank
     ) {
+
         return tanks[tank]
                 .getCapacity();
     }
@@ -651,6 +703,7 @@ public class DistillationBlockEntity
      */
 
     public ItemStack getItemOutput() {
+
         return items.getStackInSlot(
                 ITEM_OUTPUT_SLOT
         );
@@ -667,6 +720,7 @@ public class DistillationBlockEntity
             CompoundTag tag,
             HolderLookup.Provider registries
     ) {
+
         super.saveAdditional(
                 tag,
                 registries
@@ -674,7 +728,9 @@ public class DistillationBlockEntity
 
         tag.put(
                 "Items",
-                items.serializeNBT(registries)
+                items.serializeNBT(
+                        registries
+                )
         );
 
         tag.putInt(
@@ -687,7 +743,11 @@ public class DistillationBlockEntity
                 energy.getEnergyStored()
         );
 
-        for (int i = 0; i < TANK_COUNT; i++) {
+        for (
+                int i = 0;
+                i < TANK_COUNT;
+                i++
+        ) {
 
             tag.put(
                     "Fluid" + i,
@@ -710,6 +770,7 @@ public class DistillationBlockEntity
             CompoundTag tag,
             HolderLookup.Provider registries
     ) {
+
         super.loadAdditional(
                 tag,
                 registries
@@ -734,7 +795,11 @@ public class DistillationBlockEntity
             );
         }
 
-        for (int i = 0; i < TANK_COUNT; i++) {
+        for (
+                int i = 0;
+                i < TANK_COUNT;
+                i++
+        ) {
 
             String key =
                     "Fluid" + i;
@@ -758,6 +823,7 @@ public class DistillationBlockEntity
     public boolean stillValid(
             Player player
     ) {
+
         return net.minecraft.world.Container
                 .stillValidBlockEntity(
                         this,

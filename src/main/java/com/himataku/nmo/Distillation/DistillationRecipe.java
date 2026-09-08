@@ -1,7 +1,6 @@
 package com.himataku.nmo.Distillation;
 
 import com.himataku.nmo.CrusherBlock.ModRecipes;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -30,17 +29,6 @@ public class DistillationRecipe
 
     /*
      * ==================================================
-     * Recipe Type
-     *
-     * ModRecipes で登録したものを使用する
-     * ==================================================
-     */
-
-    public static final RecipeType<DistillationRecipe> TYPE =
-            ModRecipes.DISTILLATION_TYPE.get();
-
-    /*
-     * ==================================================
      * Recipe Codec
      * ==================================================
      */
@@ -50,9 +38,7 @@ public class DistillationRecipe
                     instance.group(
 
                             /*
-                             * ==========================================
                              * Input Fluid
-                             * ==========================================
                              */
 
                             SizedFluidIngredient.FLAT_CODEC
@@ -62,11 +48,9 @@ public class DistillationRecipe
                                     ),
 
                             /*
-                             * ==========================================
                              * Fluid Outputs
                              *
                              * 最大9個
-                             * ==========================================
                              */
 
                             FluidStack.CODEC
@@ -90,9 +74,7 @@ public class DistillationRecipe
                                     ),
 
                             /*
-                             * ==========================================
                              * Item Output
-                             * ==========================================
                              */
 
                             ItemStack.CODEC
@@ -105,9 +87,7 @@ public class DistillationRecipe
                                     ),
 
                             /*
-                             * ==========================================
                              * Processing Time
-                             * ==========================================
                              */
 
                             Codec.INT
@@ -117,9 +97,7 @@ public class DistillationRecipe
                                     ),
 
                             /*
-                             * ==========================================
                              * Energy
-                             * ==========================================
                              */
 
                             Codec.INT
@@ -220,8 +198,7 @@ public class DistillationRecipe
             int energy
     ) {
 
-        this.input =
-                input;
+        this.input = input;
 
         this.fluidOutputs =
                 fluidOutputs
@@ -250,7 +227,6 @@ public class DistillationRecipe
     }
 
     public List<FluidStack> getFluidOutputs() {
-
         return fluidOutputs
                 .stream()
                 .map(FluidStack::copy)
@@ -319,15 +295,18 @@ public class DistillationRecipe
 
     @Override
     public RecipeType<?> getType() {
-        return TYPE;
+
+        /*
+         * static初期化時には呼ばない。
+         * 実際にRecipeTypeが必要になった時点で取得する。
+         */
+
+        return ModRecipes.DISTILLATION_TYPE.get();
     }
 
     /*
      * ==================================================
      * Recipe Input
-     *
-     * アイテム入力は使用しない。
-     * 液体だけを入力として扱う。
      * ==================================================
      */
 
