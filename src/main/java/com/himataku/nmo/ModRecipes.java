@@ -2,6 +2,7 @@ package com.himataku.nmo.CrusherBlock;
 
 import com.himataku.nmo.Distillation.DistillationRecipe;
 import com.himataku.nmo.NewMineOrder;
+import com.himataku.nmo.Washing.WashingRecipe;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -35,6 +36,20 @@ public class ModRecipes {
                     )
             );
 
+    public static final DeferredHolder<
+            RecipeType<?>,
+            RecipeType<WashingRecipe>
+            > WASHING_TYPE =
+            RECIPE_TYPES.register(
+                    "washing",
+                    () -> RecipeType.simple(
+                            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                    NewMineOrder.MODID,
+                                    "washing"
+                            )
+                    )
+            );
+
     // =========================
     // Recipe Serializer
     // =========================
@@ -61,5 +76,14 @@ public class ModRecipes {
             SERIALIZERS.register(
                     "distillation",
                     () -> DistillationRecipe.SERIALIZER
+            );
+
+    public static final DeferredHolder<
+            RecipeSerializer<?>,
+            RecipeSerializer<WashingRecipe>
+            > WASHING =
+            SERIALIZERS.register(
+                    "washing",
+                    () -> WashingRecipe.Serializer.INSTANCE
             );
 }

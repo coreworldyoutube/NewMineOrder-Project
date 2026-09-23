@@ -1,4 +1,4 @@
-package com.himataku.nmo.customblock;
+package com.himataku.nmo.chemnmo;
 
 import com.himataku.nmo.NewMineOrder;
 import net.minecraft.core.registries.Registries;
@@ -305,6 +305,32 @@ public class AllFluidItemBlock {
                     "gasoline_bucket",
                     () -> new BucketItem(
                             AllFluid.GASOLINE.value(),
+                            new Item.Properties()
+                                    .craftRemainder(net.minecraft.world.item.Items.BUCKET)
+                                    .stacksTo(1)
+                    )
+            );
+
+
+    public static final DeferredHolder<Block, LiquidBlock> DIRTY_WATER_BLOCK =
+            BLOCKS.register(
+                    "dirty_water",
+                    () -> new LiquidBlock(
+                            (FlowingFluid) AllFluid.DIRTY_WATER.value(),
+                            BlockBehaviour.Properties.of()
+                                    .noCollission()
+                                    .strength(100.0F)
+                                    .noLootTable()
+                                    .replaceable()
+                                    .liquid()
+                    )
+            );
+
+    public static final DeferredHolder<Item, Item> DIRTY_WATER_BUCKET =
+            ITEMS.register(
+                    "dirty_water_bucket",
+                    () -> new BucketItem(
+                            AllFluid.DIRTY_WATER.value(),
                             new Item.Properties()
                                     .craftRemainder(net.minecraft.world.item.Items.BUCKET)
                                     .stacksTo(1)

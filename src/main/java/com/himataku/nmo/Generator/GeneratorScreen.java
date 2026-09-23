@@ -12,7 +12,7 @@ public class GeneratorScreen
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     "nmo",
-                    "textures/gui/generator.png"
+                    "textures/gui/generator.json.png"
             );
 
     public GeneratorScreen(

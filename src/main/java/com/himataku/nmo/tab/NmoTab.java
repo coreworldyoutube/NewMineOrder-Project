@@ -1,8 +1,8 @@
 package com.himataku.nmo.tab;
 
 import com.himataku.nmo.NewMineOrder;
-import com.himataku.nmo.customblock.AllBlock;
-import com.himataku.nmo.customblock.AllItem;
+import com.himataku.nmo.chemnmo.AllBlock;
+import com.himataku.nmo.chemnmo.AllItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,18 +20,40 @@ public class NmoTab {
                     .title(Component.translatable("itemGroup.nmo.lung"))
                     .icon(() -> Items.DIAMOND.getDefaultInstance())
                     .displayItems((parameters, output) -> {
-                        output.accept(AllBlock.BERYLLIUM_BLOCK);
-                        output.accept(AllBlock.BERYLLIUM_ORE);
-                        output.accept(AllBlock.DEEPSLATE_BERYLLIUM_ORE);
-                        output.accept(AllBlock.TUNGSTEN_BLOCK);
-                        output.accept(AllBlock.TUNGSTEN_ORE);
-                        output.accept(AllBlock.DEEPSLATE_TUNGSTEN_ORE);
-
-
-                        output.accept(AllItem.BERYLLIUM_INGOT);
-                        output.accept(AllItem.RAW_BERYLLIUM);
-                        output.accept(AllItem.TUNGSTEN_INGOT);
+                        output.accept(AllItem.OBSIDIAN_DUST);
+                        output.accept(AllItem.CRUSHED_ENDSTONE);
+                        output.accept(AllItem.CRUSHED_RAW_TUNGSTEN);
+                        output.accept(AllItem.CRUSHED_RAW_BERYLLIUM);
+                        output.accept(AllItem.CRUSHED_RAW_GOLD);
+                        output.accept(AllItem.CRUSHED_RAW_COPPER);
+                        output.accept(AllItem.CRUSHED_RAW_IRON);
+                        output.accept(AllItem.TERTIARY_BATTERY);
+                        output.accept(AllItem.DISPOSABLE_BATTERY);
+                        output.accept(AllItem.RECHARGEABLE_BATTERY);
+                        output.accept(AllItem.IRON_WIRE);
+                        output.accept(AllItem.GOLD_WIRE);
+                        output.accept(AllItem.COPPER_WIRE);
+                        output.accept(AllItem.MOTOR);
+                        output.accept(AllItem.MONAZITE);
+                        output.accept(AllItem.RAW_TITAN);
                         output.accept(AllItem.RAW_TUNGSTEN);
+                        output.accept(AllItem.RAW_BERYLLIUM);
+
+                        output.accept(AllBlock.CRUSHER_ITEM);
+                        output.accept(AllBlock.GENERATOR_ITEM);
+                        output.accept(AllBlock.DISTILLATION_ITEM);
+                        output.accept(AllBlock.ELECTRIC_FURNACE_ITEM);
+                        output.accept(AllBlock.WASHINGBLOCK_ITEM);
+                        output.accept(AllBlock.BERYLLIUM_BLOCK_ITEM);
+                        output.accept(AllBlock.BERYLLIUM_ORE_ITEM);
+                        output.accept(AllBlock.DEEPSLATE_BERYLLIUM_ORE_ITEM);
+                        output.accept(AllBlock.TUNGSTEN_BLOCK_ITEM);
+                        output.accept(AllBlock.TUNGSTEN_ORE_ITEM);
+                        output.accept(AllBlock.TITAN_ORE_ITEM);
+                        output.accept(AllBlock.TITAN_BLOCK_ITEM);
+                        output.accept(AllBlock.DUST_ITEM);
+                        output.accept(AllBlock.MONAZITE_SAND_ITEM);
+
                     })
                     .withSearchBar()
                     .build());

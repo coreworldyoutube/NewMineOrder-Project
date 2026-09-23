@@ -3,8 +3,10 @@ package com.himataku.nmo;
 import com.himataku.nmo.CrusherBlock.CrusherScreen;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceScreen;
 import com.himataku.nmo.Generator.GeneratorScreen;
-import com.himataku.nmo.customblock.AllFluid;
 import com.himataku.nmo.Distillation.DistillationScreen;
+import com.himataku.nmo.Washing.WashingScreen;
+import com.himataku.nmo.chemnmo.AllFluid;
+
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -38,9 +40,15 @@ public class ClientModEvents {
                 ModMenus.GENERATOR.get(),
                 GeneratorScreen::new
         );
+
         event.register(
                 ModMenus.DISTILLATION.get(),
                 DistillationScreen::new
+        );
+
+        event.register(
+                ModMenus.WASHING.get(),
+                WashingScreen::new
         );
     }
 
@@ -50,62 +58,30 @@ public class ClientModEvents {
     ) {
 
         /*
-         * Steam
+         * =========================================================
+         * すべてのFluidTypeに共通のテクスチャ拡張を登録
+         * =========================================================
          */
 
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.STEAM_TYPE.value()
-        );
+        IClientFluidTypeExtensions extension =
+                createSteamTextureExtension();
 
+        for (var fluidType : AllFluid.FLUID_TYPES.getEntries()) {
 
-        /*
-         * Hydrogen
-         */
-
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.HYDROGEN_TYPE.value()
-        );
-
-
-        /*
-         * Oxygen
-         */
-
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.OXYGEN_TYPE.value()
-        );
-
-
-        /*
-         * Molten Tungsten
-         */
-
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.MOLTEN_TUNGSTEN_TYPE.value()
-        );
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.CRUDE_OIL_TYPE.value()
-        );
-
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.NAPHTHA_TYPE.value()
-        );
-
-        event.registerFluidType(
-                createSteamTextureExtension(),
-                AllFluid.GASOLINE_TYPE.value()
-        );
+            event.registerFluidType(
+                    extension,
+                    fluidType
+            );
+        }
     }
 
-
     /*
-     * Steamのテクスチャを共通使用
+     * =========================================================
+     * 共通Fluidテクスチャ
+     * =========================================================
+     *
+     * 現在登録されているすべてのFluidで
+     * Steamと同じテクスチャを使用する。
      */
 
     private static IClientFluidTypeExtensions createSteamTextureExtension() {

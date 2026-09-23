@@ -4,6 +4,8 @@ import com.himataku.nmo.CrusherBlock.CrusherMenu;
 import com.himataku.nmo.Distillation.DistillationMenu;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceMenu;
 import com.himataku.nmo.Generator.GeneratorMenu;
+import com.himataku.nmo.Washing.WashingMenu;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -45,11 +47,12 @@ public class ModMenus {
             MenuType<GeneratorMenu>
             > GENERATOR =
             MENUS.register(
-                    "generator",
+                    "generator.json",
                     () -> IMenuTypeExtension.create(
                             GeneratorMenu::new
                     )
             );
+
     public static final DeferredHolder<
             MenuType<?>,
             MenuType<DistillationMenu>
@@ -58,6 +61,17 @@ public class ModMenus {
                     "distillation",
                     () -> IMenuTypeExtension.create(
                             DistillationMenu::new
+                    )
+            );
+
+    public static final DeferredHolder<
+            MenuType<?>,
+            MenuType<WashingMenu>
+            > WASHING =
+            MENUS.register(
+                    "washing",
+                    () -> IMenuTypeExtension.create(
+                            WashingMenu::new
                     )
             );
 }

@@ -134,6 +134,9 @@ dependencies {
     implementation "curse.maven:jade-324717:8591319"
     implementation "curse.maven:mekanism-268560:7904058"
 
+    // use mod
+    implementation "curse.maven:chemlib-340666:8234603"
+
     // Create 6.0.10
     implementation "curse.maven:create-328085:7963363"
 

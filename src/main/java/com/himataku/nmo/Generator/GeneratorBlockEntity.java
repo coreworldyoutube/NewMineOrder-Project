@@ -1,7 +1,7 @@
 package com.himataku.nmo.Generator;
 
 import com.himataku.nmo.ModBlockEntities;
-import com.himataku.nmo.customblock.AllFluid;
+import com.himataku.nmo.chemnmo.AllFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

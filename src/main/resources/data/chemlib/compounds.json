@@ -1,0 +1,15 @@
+{
+  "name": "beryllium_copper",
+  "matter_state": "solid",
+  "has_item": true,
+  "description": "A copper alloy containing beryllium, known for its high strength and electrical conductivity.",
+  "color": "c47a44",
+  "components": [
+    {
+      "name": "beryllium"
+    },
+    {
+      "name": "copper"
+    }
+  ]
+}

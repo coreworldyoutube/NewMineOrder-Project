@@ -1,9 +1,9 @@
 {
-  "feature": "nmo:beryllium_ore",
+  "feature": "nmo:ore_magma",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 6
+      "count": 2
     },
     {
       "type": "minecraft:in_square"
@@ -11,14 +11,18 @@
     {
       "type": "minecraft:height_range",
       "height": {
-        "type": "minecraft:uniform",
+        "type": "minecraft:trapezoid",
         "max_inclusive": {
-          "absolute": 70
+          "absolute": -16
         },
         "min_inclusive": {
-          "absolute": -63
-        }
+          "absolute": -48
+        },
+        "plateau": 0
       }
+    },
+    {
+      "type": "minecraft:biome"
     }
   ]
 }

@@ -4,7 +4,8 @@ import com.himataku.nmo.CrusherBlock.CrusherBlockEntity;
 import com.himataku.nmo.Distillation.DistillationBlockEntity;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnaceBlockEntity;
 import com.himataku.nmo.Generator.GeneratorBlockEntity;
-import com.himataku.nmo.customblock.AllBlock;
+import com.himataku.nmo.Washing.WashingBlockEntity;
+import com.himataku.nmo.chemnmo.AllBlock;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,7 +19,6 @@ public class ModBlockEntities {
                     Registries.BLOCK_ENTITY_TYPE,
                     NewMineOrder.MODID
             );
-
 
     /*
      * =========================================================
@@ -38,7 +38,6 @@ public class ModBlockEntities {
                     ).build(null)
             );
 
-
     /*
      * =========================================================
      * Electric Furnace
@@ -57,7 +56,6 @@ public class ModBlockEntities {
                     ).build(null)
             );
 
-
     /*
      * =========================================================
      * Generator
@@ -69,13 +67,12 @@ public class ModBlockEntities {
             BlockEntityType<GeneratorBlockEntity>
             > GENERATOR =
             BLOCK_ENTITY_TYPES.register(
-                    "generator",
+                    "generator.json",
                     () -> BlockEntityType.Builder.of(
                             GeneratorBlockEntity::new,
                             AllBlock.GENERATOR.get()
                     ).build(null)
             );
-
 
     /*
      * =========================================================
@@ -92,6 +89,24 @@ public class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             DistillationBlockEntity::new,
                             AllBlock.DISTILLATION.get()
+                    ).build(null)
+            );
+
+    /*
+     * =========================================================
+     * Washing
+     * =========================================================
+     */
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<WashingBlockEntity>
+            > WASHING =
+            BLOCK_ENTITY_TYPES.register(
+                    "washing",
+                    () -> BlockEntityType.Builder.of(
+                            WashingBlockEntity::new,
+                            AllBlock.WASHINGBLOCK.get()
                     ).build(null)
             );
 }

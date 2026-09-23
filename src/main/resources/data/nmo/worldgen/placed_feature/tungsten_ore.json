@@ -1,9 +1,9 @@
 {
-  "feature": "nmo:beryllium_ore",
+  "feature": "nmo:tungsten_ore",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 6
+      "count": 60
     },
     {
       "type": "minecraft:in_square"
@@ -13,10 +13,10 @@
       "height": {
         "type": "minecraft:uniform",
         "max_inclusive": {
-          "absolute": 70
+          "absolute": 120
         },
         "min_inclusive": {
-          "absolute": -63
+          "absolute": 8
         }
       }
     }

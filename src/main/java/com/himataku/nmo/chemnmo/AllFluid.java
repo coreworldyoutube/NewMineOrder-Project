@@ -1,4 +1,4 @@
-package com.himataku.nmo.customblock;
+package com.himataku.nmo.chemnmo;
 
 import com.himataku.nmo.NewMineOrder;
 import net.minecraft.core.registries.Registries;
@@ -337,6 +337,41 @@ public class AllFluid {
                     .block(() -> AllFluidItemBlock.GASOLINE_BLOCK.value())
                     .bucket(() -> AllFluidItemBlock.GASOLINE_BUCKET.value());
 
+    public static final DeferredHolder<FluidType, FluidType> DIRTY_WATER_TYPE =
+            DeferredHolder.create(
+                    NeoForgeRegistries.Keys.FLUID_TYPES,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "dirty_water"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> DIRTY_WATER =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "dirty_water"
+                    )
+            );
+
+    public static final DeferredHolder<Fluid, Fluid> FLOWING_DIRTY_WATER =
+            DeferredHolder.create(
+                    Registries.FLUID,
+                    ResourceLocation.fromNamespaceAndPath(
+                            NewMineOrder.MODID,
+                            "flowing_dirty_water"
+                    )
+            );
+
+    private static final BaseFlowingFluid.Properties DIRTY_WATER_PROPERTIES =
+            new BaseFlowingFluid.Properties(
+                    DIRTY_WATER_TYPE,
+                    DIRTY_WATER::value,
+                    FLOWING_DIRTY_WATER::value
+            )
+                    .block(() -> AllFluidItemBlock.DIRTY_WATER_BLOCK.value())
+                    .bucket(() -> AllFluidItemBlock.DIRTY_WATER_BUCKET.value());
 
     /*
      * =========================================================
@@ -593,6 +628,35 @@ public class AllFluid {
                 "flowing_gasoline",
                 () -> new BaseFlowingFluid.Flowing(
                         GASOLINE_PROPERTIES
+                )
+        );
+
+        FLUID_TYPES.register(
+                "dirty_water",
+                () -> new FluidType(
+                        FluidType.Properties.create()
+                                .density(1000)
+                                .temperature(300)
+                                .viscosity(1200)
+                                .canPushEntity(false)
+                                .canSwim(false)
+                                .canDrown(false)
+                                .canExtinguish(false)
+                                .canConvertToSource(false)
+                )
+        );
+
+        FLUIDS.register(
+                "dirty_water",
+                () -> new BaseFlowingFluid.Source(
+                        DIRTY_WATER_PROPERTIES
+                )
+        );
+
+        FLUIDS.register(
+                "flowing_dirty_water",
+                () -> new BaseFlowingFluid.Flowing(
+                        DIRTY_WATER_PROPERTIES
                 )
         );
     }

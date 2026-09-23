@@ -1,10 +1,11 @@
-package com.himataku.nmo.customblock;
+package com.himataku.nmo.chemnmo;
 
 import com.himataku.nmo.CrusherBlock.CrusherBlock;
 import com.himataku.nmo.Distillation.DistillationBlock;
 import com.himataku.nmo.ElectricFurnace.ElectricFurnace;
 import com.himataku.nmo.Generator.GeneratorBlock;
 import com.himataku.nmo.NewMineOrder;
+import com.himataku.nmo.Washing.WashingBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -181,7 +182,19 @@ public class AllBlock {
                     )
             );
 
+    public static final DeferredBlock<Block> WASHINGBLOCK =
+            BLOCKS.register("washingblock", () ->
+                    new WashingBlock(
+                            BlockBehaviour.Properties.of()
+                                    .destroyTime(3.0f)
+                                    .explosionResistance(10.0f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
 
+    public static final DeferredBlock<Block> WASHINGBLOCK_ITEM =
+            registerBlockItem("washingblock", WASHINGBLOCK);
 
     public static final DeferredBlock<Block> CRUSHER_ITEM =
             registerBlockItem("crusher", CRUSHER);

@@ -1,10 +1,10 @@
 package com.himataku.nmo;
 
 import com.himataku.nmo.CrusherBlock.ModRecipes;
-import com.himataku.nmo.customblock.AllFluid;
-import com.himataku.nmo.customblock.AllBlock;
-import com.himataku.nmo.customblock.AllFluidItemBlock;
-import com.himataku.nmo.customblock.AllItem;
+import com.himataku.nmo.chemnmo.AllFluid;
+import com.himataku.nmo.chemnmo.AllBlock;
+import com.himataku.nmo.chemnmo.AllFluidItemBlock;
+import com.himataku.nmo.chemnmo.AllItem;
 import com.himataku.nmo.tab.NmoTab;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -114,6 +114,30 @@ public class NewMineOrder {
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 ModBlockEntities.DISTILLATION.get(),
+                (blockEntity, side) ->
+                        blockEntity.getEnergyStorage()
+        );
+        // =========================
+        // Washing
+        // =========================
+
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.WASHING.get(),
+                (blockEntity, side) ->
+                        blockEntity.getItemHandler()
+        );
+
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.WASHING.get(),
+                (blockEntity, side) ->
+                        blockEntity.getFluidHandler()
+        );
+
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.WASHING.get(),
                 (blockEntity, side) ->
                         blockEntity.getEnergyStorage()
         );
