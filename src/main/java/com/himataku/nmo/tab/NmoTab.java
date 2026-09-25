@@ -70,6 +70,8 @@ public class NmoTab {
                                 // Materials / Blocks
                                 output.accept(AllBlock.DUST_ITEM);
                                 output.accept(AllBlock.MONAZITE_SAND_ITEM);
+                                output.accept(AllBlock.BLACK_SAND_ITEM);
+
                             })
                             .withSearchBar()
                             .build());

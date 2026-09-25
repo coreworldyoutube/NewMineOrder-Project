@@ -1,23 +1,23 @@
 {
   "type": "nmo:washing",
   "input": {
-    "item": "minecraft:iron_ore",
+    "item": "minecraft:magma_block",
     "fluid": {
       "fluid": "minecraft:water",
-      "amount": 1
+      "amount": 16
     }
   },
   "outputs": [
     {
-      "item": "minecraft:raw_iron",
+      "item": "minecraft:obsidian",
       "amount": 1,
       "chance": 1.0
     }
   ],
   "dirty_fluid": {
-    "fluid": "nmo:dirty_water",
-    "amount": 1
+    "fluid": "nmo:steam",
+    "amount": 32
   },
-  "energy": 1000,
+  "energy": 250,
   "process_time": 10
 }

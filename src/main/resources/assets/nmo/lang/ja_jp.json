@@ -6,11 +6,12 @@
   "block.nmo.deepslate_tungsten_ore": "深層タングステン鉱石",
   "block.nmo.titan_ore": "チタン鉱石",
   "block.nmo.monazite_sand": "モナザイト",
+  "block.nmo.black_sand": "漆黒の焦土砂鉄",
   "block.nmo.crusher": "粉砕機",
   "block.nmo.electric_furnace": "電気炉",
   "block.nmo.generator": "発電機",
   "block.nmo.distillation": "蒸留塔",
-  "block.nmo.dust": "粉塵",
+  "block.nmo.dust": "使えない砂",
   "block.nmo.washingblock": "洗浄機",
 
   "item.nmo.raw_beryllium": "ベリリウムの原石",

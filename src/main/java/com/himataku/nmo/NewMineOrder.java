@@ -1,5 +1,6 @@
 package com.himataku.nmo;
 
+import com.himataku.nmo.Biome.BlackDesertRegion;
 import com.himataku.nmo.CrusherBlock.ModRecipes;
 import com.himataku.nmo.chemnmo.AllFluid;
 import com.himataku.nmo.chemnmo.AllBlock;
@@ -9,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import terrablender.api.Regions;
 
 //import static com.smashingmods.chemlib.registry.ItemRegistry.REGISTRY_COMPOUNDS;
 //import static com.smashingmods.chemlib.registry.ItemRegistry.REGISTRY_INGOTS;
@@ -38,6 +40,8 @@ public class NewMineOrder {
         ModMenus.MENUS.register(bus);
         ModRecipes.SERIALIZERS.register(bus);
         ModRecipes.RECIPE_TYPES.register(bus);
+
+        Regions.register(new BlackDesertRegion());
 
 //        REGISTRY_COMPOUNDS.register(bus);
 //        REGISTRY_INGOTS.register(bus);

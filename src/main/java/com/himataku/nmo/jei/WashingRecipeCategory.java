@@ -106,16 +106,34 @@ public class WashingRecipeCategory
         );
 
         // =========================
-        // Output Item
+        // Output Items
         // =========================
 
-        builder.addSlot(
-                RecipeIngredientRole.OUTPUT,
-                125,
-                55
-        ).addItemStack(
-                recipe.getOutputItem()
-        );
+        int outputIndex = 0;
+
+        for (
+                WashingRecipe.Output output
+                : recipe.getOutputs()
+        ) {
+
+            if (outputIndex >= 3) {
+                break;
+            }
+
+            int x =
+                    100
+                            + outputIndex * 25;
+
+            builder.addSlot(
+                    RecipeIngredientRole.OUTPUT,
+                    x,
+                    55
+            ).addItemStack(
+                    output.item()
+            );
+
+            outputIndex++;
+        }
 
         // =========================
         // Dirty Fluid
@@ -141,6 +159,7 @@ public class WashingRecipeCategory
             double mouseX,
             double mouseY
     ) {
+
         Minecraft minecraft =
                 Minecraft.getInstance();
 
@@ -195,6 +214,42 @@ public class WashingRecipeCategory
         );
 
         // =========================
+        // Output Chance
+        // =========================
+
+        int outputIndex = 0;
+
+        for (
+                WashingRecipe.Output output
+                : recipe.getOutputs()
+        ) {
+
+            if (outputIndex >= 3) {
+                break;
+            }
+
+            int x =
+                    100
+                            + outputIndex * 25;
+
+            String chanceText =
+                    formatChance(
+                            output.chance()
+                    );
+
+            guiGraphics.drawString(
+                    minecraft.font,
+                    chanceText,
+                    x,
+                    75,
+                    0xFFFFFF,
+                    false
+            );
+
+            outputIndex++;
+        }
+
+        // =========================
         // Energy
         // =========================
 
@@ -224,6 +279,30 @@ public class WashingRecipeCategory
                 32,
                 0xFFFFFF,
                 false
+        );
+    }
+
+    /*
+     * ============================================================
+     * Chance Display
+     * ============================================================
+     */
+
+    private String formatChance(
+            float chance
+    ) {
+
+        float percent =
+                chance * 100.0F;
+
+        if (percent == (int) percent) {
+
+            return (int) percent + "%";
+        }
+
+        return String.format(
+                "%.1f%%",
+                percent
         );
     }
 }

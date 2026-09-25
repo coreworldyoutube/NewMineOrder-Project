@@ -3,25 +3,25 @@
   "input": {
     "item": "nmo:dust",
     "fluid": {
-      "fluid": "minecraft:water",
-      "amount": 7
+      "fluid": "minecraft:gravel",
+      "amount": 5
     }
   },
   "outputs": [
     {
-      "item": "minecraft:redstone",
+      "item": "minecraft:iron_nugget",
       "amount": 1,
-      "chance": 0.02
+      "chance": 0.12
     },
     {
-      "item": "minecraft:caly",
+      "item": "minecraft:flint",
       "amount": 1,
       "chance": 0.25
     }
   ],
   "dirty_fluid": {
     "fluid": "nmo:dirty_water",
-    "amount": 7
+    "amount": 5
   },
   "energy": 1000,
   "process_time": 10
