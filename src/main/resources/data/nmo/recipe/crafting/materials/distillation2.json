@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "minecraft:iron_block"
+    },
+    "B": {
+      "item": "nmo:motor"
+    },
+    "#": {
+      "item": "minecraft:iron_helmet"
+    }
+  },
+  "pattern": [
+    "#PB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nmo:distillation"
+  }
+}

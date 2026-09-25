@@ -3,6 +3,11 @@ package com.himataku.nmo.ElectricFurnace;
 import com.himataku.nmo.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -20,11 +25,48 @@ public class ElectricFurnace extends BaseEntityBlock {
 
     public ElectricFurnace(Properties properties) {
         super(properties);
+
+        registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(
+                                BlockStateProperties.HORIZONTAL_FACING,
+                                Direction.NORTH
+                        )
+                        .setValue(
+                                BlockStateProperties.LIT,
+                                false
+                        )
+        );
     }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return simpleCodec(ElectricFurnace::new);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(
+            StateDefinition.Builder<Block, BlockState> builder
+    ) {
+        builder.add(
+                BlockStateProperties.HORIZONTAL_FACING,
+                BlockStateProperties.LIT
+        );
+    }
+
+    @Override
+    public BlockState getStateForPlacement(
+            BlockPlaceContext context
+    ) {
+        return this.defaultBlockState()
+                .setValue(
+                        BlockStateProperties.HORIZONTAL_FACING,
+                        context.getHorizontalDirection().getOpposite()
+                )
+                .setValue(
+                        BlockStateProperties.LIT,
+                        false
+                );
     }
 
     @Override

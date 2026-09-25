@@ -1,15 +1,20 @@
 {
-  "name": "beryllium_copper",
-  "matter_state": "solid",
-  "has_item": true,
-  "description": "A copper alloy containing beryllium, known for its high strength and electrical conductivity.",
-  "color": "c47a44",
-  "components": [
+  "compounds": [
     {
-      "name": "beryllium"
-    },
-    {
-      "name": "copper"
+      "name": "beryllium_copper",
+      "matter_state": "solid",
+      "has_item": true,
+      "description": "A copper alloy containing beryllium.",
+      "color": "c47a44",
+      "components": [
+        {
+          "name": "beryllium"
+        },
+        {
+          "name": "copper",
+          "coments": " how to registed it? this chemlib chan UmU;"
+        }
+      ]
     }
   ]
 }

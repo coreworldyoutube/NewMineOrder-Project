@@ -1,0 +1,22 @@
+{
+  "type": "nmo:distillation",
+
+  "input": {
+    "fluid": "minecraft:water",
+    "amount": 900
+  },
+
+  "fluid_outputs": [
+    {
+      "id": "chemlib:hydrogen_fluid",
+      "amount": 900
+    },
+    {
+      "id": "chemlib:oxygen_fluid",
+      "amount": 450
+    }
+  ],
+
+  "processing_time": 5,
+  "energy": 7
+}

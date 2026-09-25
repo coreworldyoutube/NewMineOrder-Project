@@ -13,7 +13,7 @@ public class ElectricFurnaceScreen
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     NewMineOrder.MODID,
-                    "textures/gui/electric_furnace.png"
+                    "textures/gui/testgui.png"
             );
 
     public ElectricFurnaceScreen(

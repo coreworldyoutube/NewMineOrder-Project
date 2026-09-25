@@ -14,7 +14,7 @@ public class WashingScreen
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     NewMineOrder.MODID,
-                    "textures/gui/washing.png"
+                    "textures/gui/testgui.png"
             );
 
     public WashingScreen(
@@ -56,34 +56,6 @@ public class WashingScreen
                 imageWidth,
                 imageHeight
         );
-
-        /*
-         * ========================================================
-         * Progress
-         * ========================================================
-         */
-
-        int processTime =
-                menu.getProcessTime();
-
-        if (processTime > 0) {
-
-            int progress =
-                    menu.getProgress();
-
-            int width =
-                    progress * 24 / processTime;
-
-            guiGraphics.blit(
-                    TEXTURE,
-                    x + 79,
-                    y + 34,
-                    176,
-                    0,
-                    width,
-                    16
-            );
-        }
 
         /*
          * ========================================================

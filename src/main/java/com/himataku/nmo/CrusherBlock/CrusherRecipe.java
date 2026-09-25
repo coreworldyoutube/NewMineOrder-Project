@@ -8,11 +8,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class CrusherRecipe
-        implements Recipe<CrusherRecipeInput> {
+        implements Recipe<CrusherRecipe.CrusherRecipeInput> {
 
     private final Ingredient input;
     private final ResultEntry[] results;
@@ -90,6 +90,39 @@ public class CrusherRecipe
     @Override
     public RecipeType<?> getType() {
         return Type.INSTANCE;
+    }
+
+    /*
+     * ========================================
+     * Recipe Input
+     * ========================================
+     */
+
+    public static class CrusherRecipeInput
+            implements RecipeInput {
+
+        private final ItemStack input;
+
+        public CrusherRecipeInput(ItemStack input) {
+            this.input = input;
+        }
+
+        @Override
+        public ItemStack getItem(int index) {
+
+            if (index != 0) {
+                throw new IndexOutOfBoundsException(
+                        "CrusherRecipeInput only has one slot"
+                );
+            }
+
+            return input;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
     }
 
     /*
@@ -269,6 +302,7 @@ public class CrusherRecipe
                         RESULT_STREAM_CODEC.apply(
                                 ByteBufCodecs.list()
                         ),
+
                         recipe ->
                                 List.of(recipe.results),
 
@@ -291,6 +325,7 @@ public class CrusherRecipe
                 RegistryFriendlyByteBuf,
                 CrusherRecipe
                 > streamCodec() {
+
             return STREAM_CODEC;
         }
     }

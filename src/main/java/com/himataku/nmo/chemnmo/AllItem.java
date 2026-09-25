@@ -33,13 +33,6 @@ public class AllItem {
                     )
             );
 
-    public static final DeferredItem<Item> MONAZITE =
-            ITEMS.register("monazite", () ->
-                    new Item(
-                            new Item.Properties()
-
-                    )
-            );
 
     public static final DeferredItem<Item> MOTOR =
             ITEMS.register("motor", () ->
@@ -149,6 +142,36 @@ public class AllItem {
             );
     public static final DeferredItem<Item> OBSIDIAN_DUST =
             ITEMS.register("obsidian_dust", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+
+    public static final DeferredItem<Item> HANDCRAFT_IC =
+            ITEMS.register("handcraft_ic", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> MINI_PISTON =
+            ITEMS.register("mini_piston", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+
+    public static final DeferredItem<Item> BERYLLIUM_COPPER_DUST =
+            ITEMS.register("beryllium_copper_dust", () ->
+                    new Item(
+                            new Item.Properties()
+
+                    )
+            );
+    public static final DeferredItem<Item> BERYLLIUM_COPPER_INGOT =
+            ITEMS.register("beryllium_copper_ingot", () ->
                     new Item(
                             new Item.Properties()
 

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "nmo:mini_piston"
+    },
+    "B": {
+      "item": "nmo:motor"
+    },
+    "#": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "#B#",
+    "P P",
+    "#B#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nmo:crusher"
+  }
+}

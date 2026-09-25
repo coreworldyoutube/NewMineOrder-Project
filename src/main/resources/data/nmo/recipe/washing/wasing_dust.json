@@ -1,0 +1,28 @@
+{
+  "type": "nmo:washing",
+  "input": {
+    "item": "nmo:dust",
+    "fluid": {
+      "fluid": "minecraft:water",
+      "amount": 1
+    }
+  },
+  "outputs": [
+    {
+      "item": "minecraft:redstone",
+      "amount": 1,
+      "chance": 1.0
+    },
+    {
+      "item": "minecraft:iron_nugget",
+      "amount": 1,
+      "chance": 0.25
+    }
+  ],
+  "dirty_fluid": {
+    "fluid": "nmo:dirty_water",
+    "amount": 1
+  },
+  "energy": 1000,
+  "process_time": 100
+}

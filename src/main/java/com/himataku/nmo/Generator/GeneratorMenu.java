@@ -87,18 +87,21 @@ public class GeneratorMenu extends AbstractContainerMenu {
                         ),
                 new ContainerData() {
 
+                    private final int[] values = new int[5];
+
                     @Override
                     public int get(int index) {
-                        return 0;
+                        return values[index];
                     }
 
                     @Override
                     public void set(int index, int value) {
+                        values[index] = value;
                     }
 
                     @Override
                     public int getCount() {
-                        return 0;
+                        return 5;
                     }
                 }
         );

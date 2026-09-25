@@ -12,7 +12,7 @@ public class GeneratorScreen
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     "nmo",
-                    "textures/gui/generator.json.png"
+                    "textures/gui/testgui.png"
             );
 
     public GeneratorScreen(
@@ -49,9 +49,9 @@ public class GeneratorScreen
                 x,
                 y,
                 0,
-                0,
-                imageWidth,
-                imageHeight
+                1,
+                176,
+                166
         );
 
         int burnTime =

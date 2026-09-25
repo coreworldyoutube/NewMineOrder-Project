@@ -2,7 +2,9 @@ package com.himataku.nmo.CrusherBlock;
 
 import com.himataku.nmo.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,13 +14,16 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class CrusherBlock extends BaseEntityBlock {
@@ -26,13 +31,52 @@ public class CrusherBlock extends BaseEntityBlock {
     public static final MapCodec<CrusherBlock> CODEC =
             simpleCodec(CrusherBlock::new);
 
-    public CrusherBlock(BlockBehaviour.Properties properties) {
+    public CrusherBlock(
+            Properties properties
+    ) {
         super(properties);
+
+        registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(
+                                BlockStateProperties.HORIZONTAL_FACING,
+                                Direction.NORTH
+                        )
+                        .setValue(
+                                BlockStateProperties.LIT,
+                                false
+                        )
+        );
     }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(
+            StateDefinition.Builder<Block, BlockState> builder
+    ) {
+        builder.add(
+                BlockStateProperties.HORIZONTAL_FACING,
+                BlockStateProperties.LIT
+        );
+    }
+
+    @Override
+    public BlockState getStateForPlacement(
+            BlockPlaceContext context
+    ) {
+        return this.defaultBlockState()
+                .setValue(
+                        BlockStateProperties.HORIZONTAL_FACING,
+                        context.getHorizontalDirection().getOpposite()
+                )
+                .setValue(
+                        BlockStateProperties.LIT,
+                        false
+                );
     }
 
     @Override

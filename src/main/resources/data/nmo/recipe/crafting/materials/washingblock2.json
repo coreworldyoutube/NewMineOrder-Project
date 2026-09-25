@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "minecraft:bucket"
+    },
+    "B": {
+      "item": "nmo:motor"
+    },
+    "#": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "pattern": [
+    "#PB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nmo:washingblock"
+  }
+}

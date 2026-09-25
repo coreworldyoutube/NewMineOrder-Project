@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:furnace"
+    },
+    "#": {
+      "item": "minecraft:iron_helmet"
+    }
+  },
+  "pattern": [
+    "#B"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nmo:electric_furnace"
+  }
+}

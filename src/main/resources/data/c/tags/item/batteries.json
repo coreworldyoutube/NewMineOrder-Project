@@ -1,0 +1,7 @@
+{
+  "values": [
+    "c:batteries/rechargeable_battery",
+    "c:batteries/disposable_battery",
+    "c:batteries/tertiary_battery"
+  ]
+}

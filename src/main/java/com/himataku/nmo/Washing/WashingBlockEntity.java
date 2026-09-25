@@ -1,12 +1,13 @@
 package com.himataku.nmo.Washing;
 
-import com.himataku.nmo.ModBlockEntities;
 import com.himataku.nmo.CrusherBlock.ModRecipes;
+import com.himataku.nmo.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -343,7 +344,6 @@ public class WashingBlockEntity
     /*
      * ============================================================
      * Fluid Handler
-     * ============================================================
      *
      * fill  → Input Tank
      * drain → Dirty Fluid Tank
@@ -594,10 +594,6 @@ public class WashingBlockEntity
          * --------------------------------------------------------
          * Fluid
          * --------------------------------------------------------
-         *
-         * レシピamountではなく、
-         * 機械として最低1000mL必要。
-         * --------------------------------------------------------
          */
 
         if (
@@ -721,12 +717,33 @@ public class WashingBlockEntity
             WashingRecipe recipe
     ) {
 
-        ItemStack output =
-                recipe.getOutputItem();
+        /*
+         * すべての可能性のある出力を確認する。
+         *
+         * chanceが25%でも、出る可能性がある以上
+         * 出力スロットに入る場所が必要。
+         */
 
-        if (!canInsertItem(output)) {
-            return false;
+        for (
+                WashingRecipe.Output output
+                : recipe.getOutputs()
+        ) {
+
+            ItemStack item =
+                    output.item();
+
+            if (item.isEmpty()) {
+                continue;
+            }
+
+            if (!canInsertItem(item)) {
+                return false;
+            }
         }
+
+        /*
+         * Dirty Fluid
+         */
 
         FluidStack dirty =
                 recipe.getDirtyFluid();
@@ -767,7 +784,7 @@ public class WashingBlockEntity
         }
 
         /*
-         * 既存スタックに入るか
+         * 既存スタックへ入るか
          */
 
         for (int i = 0; i < 3; i++) {
@@ -942,13 +959,49 @@ public class WashingBlockEntity
 
         /*
          * --------------------------------------------------------
-         * Item Output
+         * Item Outputs
+         * --------------------------------------------------------
+         *
+         * 各出力についてchanceを判定。
+         *
+         * 1.0 = 必ず出る
+         * 0.25 = 25%
+         * 0.0 = 出ない
          * --------------------------------------------------------
          */
 
-        insertOutputItem(
-                recipe.getOutputItem()
-        );
+        RandomSource random =
+                level.getRandom();
+
+        for (
+                WashingRecipe.Output output
+                : recipe.getOutputs()
+        ) {
+
+            float chance =
+                    output.chance();
+
+            if (chance <= 0.0F) {
+                continue;
+            }
+
+            if (chance < 1.0F) {
+
+                if (
+                        random.nextFloat()
+                                >= chance
+                ) {
+                    continue;
+                }
+            }
+
+            ItemStack result =
+                    output.item().copy();
+
+            insertOutputItem(
+                    result
+            );
+        }
 
         /*
          * --------------------------------------------------------

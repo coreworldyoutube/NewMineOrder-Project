@@ -12,7 +12,7 @@ public class DistillationScreen
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     "nmo",
-                    "textures/gui/distillation.png"
+                    "textures/gui/testgui.png"
             );
 
     public DistillationScreen(

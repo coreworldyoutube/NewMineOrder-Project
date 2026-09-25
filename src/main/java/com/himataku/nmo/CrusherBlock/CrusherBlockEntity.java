@@ -336,8 +336,8 @@ public class CrusherBlockEntity extends BlockEntity implements Container {
             return null;
         }
 
-        CrusherRecipeInput input =
-                new CrusherRecipeInput(
+        CrusherRecipe.CrusherRecipeInput input =
+                new CrusherRecipe.CrusherRecipeInput(
                         items.get(INPUT_SLOT)
                 );
 

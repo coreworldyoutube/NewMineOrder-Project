@@ -94,3 +94,10 @@ side="BOTH"
 #[features.nmo]
 #openGLVersion="[3.2,)"
 
+# ChemLib dependency
+[[dependencies.nmo]]
+modId="chemlib"
+type="required"
+versionRange="[2.1.5,)"
+ordering="NONE"
+side="BOTH"

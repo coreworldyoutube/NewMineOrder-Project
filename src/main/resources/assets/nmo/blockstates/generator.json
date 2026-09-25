@@ -5,21 +5,21 @@
       "y": 90
     },
     "facing=east,lit=true": {
-      "model": "nmo:block/generator_on",
+      "model": "nmo:block/generator",
       "y": 90
     },
     "facing=north,lit=false": {
       "model": "nmo:block/generator"
     },
     "facing=north,lit=true": {
-      "model": "nmo:block/generator_on"
+      "model": "nmo:block/generator"
     },
     "facing=south,lit=false": {
       "model": "nmo:block/generator",
       "y": 180
     },
     "facing=south,lit=true": {
-      "model": "nmo:block/generator_on",
+      "model": "nmo:block/generator",
       "y": 180
     },
     "facing=west,lit=false": {
@@ -27,7 +27,7 @@
       "y": 270
     },
     "facing=west,lit=true": {
-      "model": "nmo:block/generator_on",
+      "model": "nmo:block/generator",
       "y": 270
     }
   }

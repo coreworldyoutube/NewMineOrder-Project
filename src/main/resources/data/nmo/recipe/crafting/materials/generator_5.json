@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nmo:motor"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "#": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "pattern": [
+    "#BF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nmo:generator"
+  }
+}
